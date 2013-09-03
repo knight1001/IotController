@@ -1,21 +1,21 @@
-package com.oosic.intdevice;
+package com.oosic.iot.controller;
 
-import com.oosic.intdevice.library.ActivityStack;
-import com.oosic.intdevice.library.PreferenceManager;
-import com.oosic.intdevice.utils.UIUtils;
+import com.oosic.iot.controller.library.ActivityStack;
+import com.oosic.iot.controller.library.PreferenceManager;
+import com.oosic.iot.controller.utils.UIUtils;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
-public class IntBaseActivity extends Activity {
+public class IotBaseActivity extends Activity {
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
       if (getActivityStack() == null) {
-         ((IntApp) getApplication()).prepareEnvironment();
+         ((IotApp) getApplication()).prepareEnvironment();
       }
 
       getActivityStack().push(this);
@@ -37,7 +37,7 @@ public class IntBaseActivity extends Activity {
       getActivityStack().remove(this);
 
       if (getActivityStack().getCount() <= 0) {
-         ((IntApp) getApplication()).cleanupEnvironment();
+         ((IotApp) getApplication()).cleanupEnvironment();
       }
    }
 

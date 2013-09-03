@@ -1,4 +1,4 @@
-package com.oosic.intdevice.library;
+package com.oosic.iot.controller.library;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
@@ -6,15 +6,15 @@ import java.util.Map;
 import android.content.Context;
 import android.os.Handler;
 
-public class IntManager {
+public class IotManager {
 
    private Context mContext;
    private Handler mHandler;
-   private IntConfig mConfig;
+   private IotConfig mConfig;
    private Map<String, InetSocketAddress> mDeviceSocketAddrs;
    private Map<String, String> mDeviceMacAddrs;
    
-   public IntManager(Context context) {
+   public IotManager(Context context) {
       mContext = context;
    }
    
@@ -22,9 +22,9 @@ public class IntManager {
       mHandler = handler;
    }
    
-   public IntConfig getConfig() {
+   public IotConfig getConfig() {
       if (mConfig == null) {
-         mConfig = new IntConfig(mContext);
+         mConfig = new IotConfig(mContext);
       }
       return mConfig;
    }

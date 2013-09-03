@@ -1,4 +1,4 @@
-package com.oosic.intdevice.library;
+package com.oosic.iot.controller.library;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -13,7 +13,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
 
-public class IntConfig {
+public class IotConfig {
 
    private static final String DEFAULT_SYNC_L_STRING = "abc";
    private static final String DEFAULT_SYNC_H_STRING = "abcdefghijklmnopqrstuvw";
@@ -46,7 +46,7 @@ public class IntConfig {
    private Thread mListeningAckTask;
    private boolean mStopListening;
 
-   public IntConfig(Context context) {
+   public IotConfig(Context context) {
       mContext = context;
    }
 

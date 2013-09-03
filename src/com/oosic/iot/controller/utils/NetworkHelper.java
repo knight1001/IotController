@@ -1,4 +1,4 @@
-package com.oosic.intdevice.utils;
+package com.oosic.iot.controller.utils;
 
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;

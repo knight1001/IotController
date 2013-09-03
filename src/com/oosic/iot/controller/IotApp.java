@@ -1,13 +1,13 @@
-package com.oosic.intdevice;
+package com.oosic.iot.controller;
 
-import com.oosic.intdevice.library.ActivityStack;
-import com.oosic.intdevice.library.PreferenceManager;
+import com.oosic.iot.controller.library.ActivityStack;
+import com.oosic.iot.controller.library.PreferenceManager;
 
 import android.app.Activity;
 import android.app.Application;
 import android.util.DisplayMetrics;
 
-public class IntApp extends Application {
+public class IotApp extends Application {
 
    private ActivityStack mActivityStack;
    private PreferenceManager mPrefsManager;

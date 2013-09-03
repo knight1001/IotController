@@ -1,18 +1,18 @@
-package com.oosic.intdevice.library;
+package com.oosic.iot.controller.library;
 
 import android.content.Context;
 import android.os.Handler;
 
-public abstract class IntAsyncTask<Result> extends Thread {
+public abstract class IotAsyncTask<Result> extends Thread {
 
    protected Context context;
    protected Handler handler;
 
-   public IntAsyncTask(Handler handler) {
+   public IotAsyncTask(Handler handler) {
       this.handler = handler;
    }
 
-   public IntAsyncTask(Handler handler, Context context) {
+   public IotAsyncTask(Handler handler, Context context) {
       this(handler);
       this.context = context;
    }

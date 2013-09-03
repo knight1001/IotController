@@ -1,4 +1,4 @@
-package com.oosic.intdevice.utils;
+package com.oosic.iot.controller.utils;
 
 import java.io.File;
 import java.io.IOException;

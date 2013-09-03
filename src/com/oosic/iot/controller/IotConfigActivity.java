@@ -1,14 +1,14 @@
-package com.oosic.intdevice;
+package com.oosic.iot.controller;
 
 import android.os.Bundle;
 
-public class IntControlActivity extends IntBaseActivity {
+public class IotConfigActivity extends IntBaseActivity {
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      setContentView(R.layout.activity_control);
+      setContentView(R.layout.activity_config);
 
       findViews();
       initViews();

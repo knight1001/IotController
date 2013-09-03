@@ -1,6 +1,6 @@
-package com.oosic.intdevice.library;
+package com.oosic.iot.controller.library;
 
-public class IntException extends Exception {
+public class IotException extends Exception {
 
    public static final int ENCRYPTION_KEY_ERROR = -1;
    public static final int LENGTH_OF_SSID_EXCEEDS = -2;
@@ -12,7 +12,7 @@ public class IntException extends Exception {
 
    protected int code = 0;
 
-   public IntException(int errorCode, String errorMsg) {
+   public IotException(int errorCode, String errorMsg) {
       super(errorMsg);
       this.code = errorCode;
    }

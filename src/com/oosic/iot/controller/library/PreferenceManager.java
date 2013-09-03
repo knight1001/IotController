@@ -1,4 +1,4 @@
-package com.oosic.intdevice.library;
+package com.oosic.iot.controller.library;
 
 import android.content.Context;
 import android.content.SharedPreferences;
