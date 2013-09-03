@@ -1,15 +1,22 @@
 package com.oosic.iot.controller.library;
 
+import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.http.conn.ConnectTimeoutException;
+
 import android.content.Context;
+import android.database.CursorJoiner.Result;
 import android.os.Handler;
 import android.text.TextUtils;
 
@@ -35,16 +42,20 @@ public class IotConfig {
    private String mPassword;
    private String mSsid;
    private String mGatewayIp;
-   private byte[] mEncryptionKey = DEFAULT_ENCRYPTION_KEY.getBytes();
+   private String mEncryptionKey = DEFAULT_ENCRYPTION_KEY;
    private String mAckString = DEFAULT_ACK_STRING;
-   private MulticastSocket mListeningAckSocket;
-   private int mListeningAckPort;
-   private Thread mTransmittingTask;
+   private ArrayList<Integer> mEncryptedSettings;
+
+   private MulticastSocket mListenAckSocket;
+   private int mListenAckPort;
+   private Thread mTransmitTask;
    private boolean mStopTransmitting = false;
-   private InetSocketAddress mTransmittingSocketAddr;
-   private int mTransmittingPort;
-   private Thread mListeningAckTask;
-   private boolean mStopListening;
+   private InetSocketAddress mTransmitSocketAddr;
+   private int mTransmitPort;
+   private Thread mListenAckTask;
+   private boolean mStopListening = false;
+
+   private IotConfigListner mConfigListner;
 
    public IotConfig(Context context) {
       mContext = context;
@@ -54,13 +65,13 @@ public class IotConfig {
       mHandler = handler;
    }
 
-   public void setSsid(String ssid) throws IntException, NullPointerException {
+   public void setSsid(String ssid) throws IotException, NullPointerException {
       if (TextUtils.isEmpty(ssid)) {
          throw new NullPointerException("SSID is empty");
       }
       if (ssid.length() > MAX_LENGTH_OF_SSID) {
-         throw new IntException(IntException.LENGTH_OF_SSID_EXCEEDS,
-               IntException.MSG_LENGTH_OF_SSID_EXCEEDS);
+         throw new IotException(IotException.LENGTH_OF_SSID_EXCEEDS,
+               IotException.MSG_LENGTH_OF_SSID_EXCEEDS);
       }
       mSsid = ssid;
    }
@@ -69,20 +80,20 @@ public class IotConfig {
       mGatewayIp = gatewayIp;
    }
 
-   public void setPassword(String password) throws IntException {
+   public void setPassword(String password) throws IotException {
       if (!TextUtils.isEmpty(password)
             && password.length() > MAX_LENGTH_OF_PASSWORD) {
-         throw new IntException(IntException.LENGTH_OF_PASSWORD_EXCEEDS,
-               IntException.MSG_LENGTH_OF_PASSWORD_EXCEEDS);
+         throw new IotException(IotException.LENGTH_OF_PASSWORD_EXCEEDS,
+               IotException.MSG_LENGTH_OF_PASSWORD_EXCEEDS);
       }
       mPassword = password;
    }
 
-   public void setEncryptionKey(byte[] encryptionKey) throws Exception {
+   public void setEncryptionKey(String encryptionKey) throws Exception {
       if (encryptionKey != null
-            && encryptionKey.length != LENGTH_OF_ENCRYPTION_KEY) {
-         throw new IntException(IntException.ENCRYPTION_KEY_ERROR,
-               IntException.MSG_ENCRYPTION_KEY_ERROR);
+            && encryptionKey.length() != LENGTH_OF_ENCRYPTION_KEY) {
+         throw new IotException(IotException.ENCRYPTION_KEY_ERROR,
+               IotException.MSG_ENCRYPTION_KEY_ERROR);
       }
       mEncryptionKey = encryptionKey;
    }
@@ -91,24 +102,25 @@ public class IotConfig {
       mAckString = mdnsAckString;
    }
 
+   public void setConfigListner(IotConfigListner listner) {
+      mConfigListner = listner;
+   }
+
    public void start() {
-      new TransmittingTask(mHandler, mContext).start();
-      new ListeningAckTask(mHandler, mContext).start();
+      try {
+         mTransmitTask = new TransmitSettingsTask(mHandler, mContext);
+         mTransmitTask.start();
+
+         mListenAckTask = new ListenAckTask(mHandler, mContext);
+         mListenAckTask.start();
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
    }
 
    public void stop() {
-
-   }
-
-   private void createListeningAckSocket(int port) throws Exception {
-      InetAddress wildcardAddr = null;
-      InetSocketAddress localAddr = new InetSocketAddress(wildcardAddr, port);
-      mListeningAckSocket = new MulticastSocket(null);
-      mListeningAckSocket.setReuseAddress(true);
-      mListeningAckSocket.bind(localAddr);
-      mListeningAckSocket.setTimeToLive(255);
-      mListeningAckSocket.joinGroup(InetAddress.getByName("224.0.0.251"));
-      mListeningAckSocket.setBroadcast(true);
+      stopListening();
+      stopTransmitting();
    }
 
    private void send(DatagramPacket packet, int port) throws Exception {
@@ -118,21 +130,117 @@ public class IotConfig {
    }
 
    private void transmitSettings() throws Exception {
-      
+      byte[] syncLBuffer = DEFAULT_SYNC_L_STRING.getBytes();
+      byte[] syncHBuffer = DEFAULT_SYNC_H_STRING.getBytes();
+
+      mEncryptedSettings = new SsidEncryption(mSsid, mPassword, mEncryptionKey)
+            .getEncryptedData();
+      ArrayList<Integer> packets = mEncryptedSettings;
+      int numberOfPackets = mEncryptedSettings.size();
+      InetSocketAddress socketAddr = mTransmitSocketAddr;
+      int port = mTransmitPort;
+      byte[] sendBuff = makePaddedByteArray(1600);
+      while (!mStopTransmitting) {
+         for (int i = 0; i < DEFAULT_NUMBER_OF_SETUPS; i++) {
+            for (int j = 0; j < numberOfPackets; j++) {
+               send(new DatagramPacket(sendBuff, (packets.get(j)).intValue(),
+                     socketAddr), port);
+
+               if (((packets.get(j)).intValue() != SsidEncryption.FLAG_START)
+                     && ((packets.get(j)).intValue() != SsidEncryption.FLAG_SEPARATOR)) {
+                  send(new DatagramPacket(syncLBuffer, syncLBuffer.length,
+                        socketAddr), port);
+                  send(new DatagramPacket(syncHBuffer, syncHBuffer.length,
+                        socketAddr), port);
+               }
+            }
+         }
+
+         try {
+            Thread.sleep(100L);
+         } catch (InterruptedException e) {
+            return;
+         }
+      }
    }
 
    private void stopTransmitting() {
-
+      mStopTransmitting = true;
+      if (Thread.currentThread() != mTransmitTask) {
+         mTransmitTask.interrupt();
+      }
    }
 
-   private class TransmittingTask extends IntAsyncTask<Void> {
+   private void stopListening() {
+      mStopListening = true;
+      mListenAckSocket.close();
+   }
 
-      public TransmittingTask(Handler handler, Context context) {
+   private void createListenAckSocket() throws Exception {
+      InetAddress wildcardAddr = null;
+      InetSocketAddress localAddr = new InetSocketAddress(wildcardAddr,
+            DEFAULT_LISTEN_PORT);
+      mListenAckSocket = new MulticastSocket(null);
+      mListenAckSocket.setReuseAddress(true);
+      mListenAckSocket.bind(localAddr);
+      mListenAckSocket.setTimeToLive(255);
+      mListenAckSocket.joinGroup(InetAddress.getByName("224.0.0.251"));
+      mListenAckSocket.setBroadcast(true);
+   }
+
+   private IotConfigResult waitForAck() throws Exception {
+      final int RECV_BUFFER_LENGTH = 16384;
+      byte[] recvBuff = new byte[RECV_BUFFER_LENGTH];
+      DatagramPacket recvPacket = new DatagramPacket(recvBuff, recvBuff.length);
+      int timeout = TIMEOUT_WAITING_FOR_ACK;
+
+      createListenAckSocket();
+
+      while (!mStopListening) {
+         long start = System.nanoTime();
+         try {
+            mListenAckSocket.setSoTimeout(timeout);
+            mListenAckSocket.receive(recvPacket);
+         } catch (InterruptedIOException e) {
+            stop();
+            return new IotConfigResult(IotEvent.TIMEOUT, e);
+         } catch (Exception e) {
+            if (!mStopListening) {
+               stop();
+               return new IotConfigResult(IotEvent.ERROR, e);
+            }
+            return null;
+         }
+
+         if (hasAckString(recvPacket.getData())) {
+            stop();
+            IotConfigResult result = new IotConfigResult(IotEvent.SUCCESS);
+            result.setPacket(recvPacket);
+            return result;
+         }
+
+         timeout = (int) (timeout - (System.nanoTime() - start) / 1000000L);
+         if (timeout <= 0) {
+            stop();
+            return new IotConfigResult(IotEvent.TIMEOUT);
+         }
+      }
+      return null;
+   }
+
+   private class TransmitSettingsTask extends IotAsyncTask<Void> {
+
+      public TransmitSettingsTask(Handler handler, Context context) {
          super(handler, context);
       }
 
       @Override
       public Void doInBackground() {
+         try {
+            transmitSettings();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
          return null;
       }
 
@@ -143,43 +251,42 @@ public class IotConfig {
 
    }
 
-   private class ListeningAckTask extends IntAsyncTask<DatagramPacket> {
+   private class ListenAckTask extends IotAsyncTask<IotConfigResult> {
 
-      public ListeningAckTask(Handler handler, Context context) {
+      public ListenAckTask(Handler handler, Context context) {
          super(handler, context);
       }
 
       @Override
-      public DatagramPacket doInBackground() {
-         return null;
+      public IotConfigResult doInBackground() {
+         try {
+            return waitForAck();
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+         return new IotConfigResult(IotEvent.ERROR);
       }
 
       @Override
-      public void onPostExecute(DatagramPacket result) {
-
+      public void onPostExecute(IotConfigResult result) {
+         if (result != null && mConfigListner != null) {
+            mConfigListner.onConfigEvent(result.getEvent(), result.getPacket());
+         }
       }
 
    }
 
    private boolean hasAckString(byte[] data) {
-      try {
-         return mAckString.equals(parseAckString(data));
-      } catch (Exception e) {
-         // e.printStackTrace();
-      }
-      return false;
+      return mAckString.equals(parseAckString(data));
    }
 
-   private String parseAckString(byte[] data) throws Exception {
-      final int MDNS_HEADER_SIZE = 12;
-      final int MDNS_HEADER_SIZE2 = 10;
-
+   private String parseAckString(byte[] data) {
       int pos = 12;
 
       if (data.length < pos + 1) {
          return null;
       }
-      int len = data[pos] & 0xFF;
+      int len = data[pos] & 0xff;
       pos++;
 
       while (len > 0) {
@@ -191,7 +298,7 @@ public class IotConfig {
          if (data.length < pos + 1) {
             return null;
          }
-         len = data[pos] & 0xFF;
+         len = data[pos] & 0xff;
          pos++;
       }
 
@@ -200,70 +307,21 @@ public class IotConfig {
       if (data.length < pos + 1) {
          return null;
       }
-      len = data[pos] & 0xFF;
+      len = data[pos] & 0xff;
       pos++;
 
       if (data.length < pos + len) {
          return null;
       }
+
       return new String(data, pos, len);
    }
 
-   private byte[] encryptData(byte[] data) throws Exception {
-      if (this.mEncryptionKey == null)
-         return data;
-      if (this.mEncryptionKey.length == 0) {
-         return data;
-      }
-      int ZERO_OFFSET = 0;
-      int AES_LENGTH = 16;
-      int DATA_LENGTH = 32;
-
-      Cipher c = null;
-      byte[] encryptedData = null;
-      byte[] paddedData = new byte[32];
-      byte[] aesKey = new byte[16];
-
-      for (int x = 0; x < 16; x++) {
-         if (x < this.mEncryptionKey.length) {
-            aesKey[x] = this.mEncryptionKey[x];
-         } else {
-            aesKey[x] = 0;
-         }
-
-      }
-
-      int dataOffset = 0;
-      if (data.length < 32) {
-         paddedData[dataOffset] = (byte) data.length;
-         dataOffset++;
-      }
-
-      System.arraycopy(data, 0, paddedData, dataOffset, data.length);
-      dataOffset += data.length;
-
-      while (dataOffset < 32) {
-         paddedData[dataOffset] = 0;
-         dataOffset++;
-      }
-
-      c = Cipher.getInstance("AES/ECB/NoPadding");
-
-      SecretKeySpec k = null;
-      k = new SecretKeySpec(aesKey, "AES");
-
-      c.init(1, k);
-
-      encryptedData = c.doFinal(paddedData);
-
-      return encryptedData;
-   }
-
-   private byte[] makePaddedByteArray(int length) throws Exception {
+   private byte[] makePaddedByteArray(int length) {
       byte[] paddedArray = new byte[length];
 
       for (int x = 0; x < length; x++) {
-         paddedArray[x] = (byte) "1".charAt(0);
+         paddedArray[x] = '1';
       }
 
       return paddedArray;
