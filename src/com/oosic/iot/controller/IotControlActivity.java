@@ -2,7 +2,7 @@ package com.oosic.iot.controller;
 
 import android.os.Bundle;
 
-public class IotControlActivity extends IntBaseActivity {
+public class IotControlActivity extends IotBaseActivity {
 
    @Override
    public void onCreate(Bundle savedInstanceState) {

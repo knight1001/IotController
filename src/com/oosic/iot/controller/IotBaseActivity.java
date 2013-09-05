@@ -46,11 +46,11 @@ public class IotBaseActivity extends Activity {
    }
 
    protected ActivityStack getActivityStack() {
-      return ((IntApp) getApplication()).getActivityStack();
+      return ((IotApp) getApplication()).getActivityStack();
    }
 
    protected PreferenceManager getPrefsManager() {
-      return ((IntApp) getApplication()).getPrefsManager();
+      return ((IotApp) getApplication()).getPrefsManager();
    }
 
 }

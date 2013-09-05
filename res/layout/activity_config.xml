@@ -1,11 +1,267 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <TextView
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Config" />
+        android:background="@drawable/topbar_bg" >
 
-</RelativeLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/device_config"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/topbar_text_size"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/config_info_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/config_info_margin"
+        android:background="@drawable/config_info_bg"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/config_ssid_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/config_info_padding"
+                android:layout_weight="1"
+                android:text="@string/ssid"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/config_info_text_size"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/config_ssid_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/config_info_padding"
+                android:layout_marginRight="@dimen/config_info_padding"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="@string/ssid"
+                android:maxLength="32"
+                android:paddingLeft="@dimen/config_info_padding"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/config_info_text_size" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/divider_height"
+            android:background="@color/divider_bg" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/config_password_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/config_info_padding"
+                android:layout_weight="1"
+                android:text="@string/password"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/config_info_text_size"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/config_password_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/config_info_padding"
+                android:layout_marginRight="@dimen/config_info_padding"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="@string/password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:paddingLeft="@dimen/config_info_padding"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/config_info_text_size" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height"
+            android:background="@color/divider_bg" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/config_gateway_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/config_info_padding"
+                android:layout_weight="1"
+                android:text="@string/gateway_ip"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/config_info_text_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/config_gateway_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/config_info_padding"
+                android:layout_marginRight="@dimen/config_info_padding"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="@string/loopback_ip"
+                android:paddingLeft="5dp"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/config_info_text_size" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/divider_height"
+            android:background="@color/divider_bg" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/config_key_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/config_info_padding"
+                android:layout_weight="1"
+                android:text="@string/encryption_key"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/config_info_text_size"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:orientation="horizontal" >
+
+                <EditText
+                    android:id="@+id/config_key"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/config_info_padding"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="@string/encryption_key"
+                    android:imeOptions="actionNext"
+                    android:maxLength="@integer/encryption_key_max_length"
+                    android:paddingLeft="@dimen/config_info_padding"
+                    android:singleLine="true"
+                    android:text="smartconfigAES16"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/config_info_text_size" />
+
+                <CheckBox
+                    android:id="@+id/config_key_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="@dimen/config_info_padding"
+                    android:checked="true" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/divider_height"
+            android:background="@color/divider_bg" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/config_device_name_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/config_info_padding"
+                android:layout_weight="1"
+                android:text="@string/device_name"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/config_info_text_size"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/config_device_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/config_info_padding"
+                android:layout_marginRight="@dimen/config_info_padding"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="@string/device_name"
+                android:imeOptions="actionDone"
+                android:paddingLeft="@dimen/config_info_padding"
+                android:singleLine="true"
+                android:text="@string/cc3000"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/config_info_text_size" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/config_info_padding"
+        android:layout_marginRight="@dimen/config_info_padding"
+        android:layout_marginTop="@dimen/config_info_padding" >
+
+        <Button
+            android:id="@+id/config_start_btn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/btn_bg"
+            android:gravity="center"
+            android:text="@string/start"
+            android:textColor="@android:color/white" />
+
+        <ProgressBar
+            android:id="@+id/config_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/config_info_padding"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">智能设备</string>
+    <string name="app_name">IotController</string>
+    <string name="device_config">Device Configuration</string>
+    <string name="ssid">SSID</string>
+    <string name="password">Password</string>
+    <string name="gateway_ip">Gateway IP Address</string>
+    <string name="loopback_ip">127.0.0.1</string>
+    <string name="encryption_key">Key</string>
+    <string name="device_name">Device Name</string>
+    <string name="cc3000">CC3000</string>
+    <string name="start">Start</string>
 
 </resources>

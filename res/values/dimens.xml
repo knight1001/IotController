@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <dimen name="topbar_text_size">22sp</dimen>
+    <dimen name="config_info_margin">5dp</dimen>
+    <dimen name="config_info_text_size">16dp</dimen>
+    <dimen name="config_info_padding">5dp</dimen>
+    <dimen name="divider_height">1dp</dimen>
+    <integer name="encryption_key_max_length">16</integer>
+    
+</resources>
