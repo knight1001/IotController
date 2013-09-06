@@ -1,37 +1,31 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     android:background="@drawable/main_bg" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/topbar_bg" >
+    <RelativeLayout style="@style/TopbarLayout" >
 
         <Button
             android:id="@+id/search_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TopbarButton"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/device_list_btn"
             android:background="@drawable/ico_search" />
 
         <Button
             android:id="@id/device_list_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/TopbarButton"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/config_btn"
             android:background="@drawable/ico_dev_list" />
 
         <Button
-            android:id="@+id/config_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@id/config_btn"
+            style="@style/TopbarButton"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="@drawable/ico_config" />
     </RelativeLayout>
-    
+
 </RelativeLayout>

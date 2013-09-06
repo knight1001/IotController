@@ -28,19 +28,19 @@ public class NetworkHelper {
       if (connManager != null) {
          NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
          if (networkInfo != null) {
-             return networkInfo.isAvailable() && networkInfo.isConnected();
+            return networkInfo.isAvailable() && networkInfo.isConnected();
          }
       }
       return false;
    }
-   
+
    public static int getAvailableNetworkType(Context context) {
       ConnectivityManager connManager = (ConnectivityManager) context
             .getSystemService(Context.CONNECTIVITY_SERVICE);
       if (connManager != null) {
          NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
          if (networkInfo != null && networkInfo.isAvailable()) {
-             return networkInfo.getType();
+            return networkInfo.getType();
          }
       }
       return -1;
@@ -65,7 +65,7 @@ public class NetworkHelper {
       if (connManager != null) {
          NetworkInfo networkInfo = connManager
                .getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-            return networkInfo.isAvailable() && networkInfo.isConnected();
+         return networkInfo.isAvailable() && networkInfo.isConnected();
       }
       return false;
    }
@@ -86,6 +86,12 @@ public class NetworkHelper {
       } catch (ActivityNotFoundException e) {
          e.printStackTrace();
       }
+   }
+
+   public static String int2IpAddress(int ip) {
+      return new StringBuilder().append(ip & 0xff).append('.')
+            .append(ip >> 8 & 0xff).append('.').append(ip >> 16 & 0xff)
+            .append('.').append(ip >> 24 & 0xff).toString();
    }
 
 }

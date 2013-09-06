@@ -1,6 +1,7 @@
 package com.oosic.iot.controller;
 
 import com.oosic.iot.controller.library.ActivityStack;
+import com.oosic.iot.controller.library.IotManager;
 import com.oosic.iot.controller.library.PreferenceManager;
 import com.oosic.iot.controller.utils.UIUtils;
 
@@ -51,6 +52,10 @@ public class IotBaseActivity extends Activity {
 
    protected PreferenceManager getPrefsManager() {
       return ((IotApp) getApplication()).getPrefsManager();
+   }
+   
+   protected IotManager getIotManager() {
+      return ((IotApp) getApplication()).getIotManager();
    }
 
 }

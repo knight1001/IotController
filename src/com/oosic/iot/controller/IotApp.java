@@ -1,6 +1,7 @@
 package com.oosic.iot.controller;
 
 import com.oosic.iot.controller.library.ActivityStack;
+import com.oosic.iot.controller.library.IotManager;
 import com.oosic.iot.controller.library.PreferenceManager;
 
 import android.app.Activity;
@@ -11,6 +12,7 @@ public class IotApp extends Application {
 
    private ActivityStack mActivityStack;
    private PreferenceManager mPrefsManager;
+   private IotManager mIotManager;
 
    @Override
    public void onCreate() {
@@ -30,6 +32,13 @@ public class IotApp extends Application {
          mPrefsManager = new PreferenceManager(this);
       }
       return mPrefsManager;
+   }
+   
+   public IotManager getIotManager() {
+      if (mIotManager == null) {
+         mIotManager = new IotManager(this);
+      }
+      return mIotManager;
    }
 
    public void prepareEnvironment() {

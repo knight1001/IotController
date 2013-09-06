@@ -4,6 +4,10 @@ public enum IotEvent {
 
    SUCCESS,
    ERROR,
-   TIMEOUT
+   TIMEOUT;
+   
+   public static final boolean isSuccess(IotEvent event) {
+      return SUCCESS.compareTo(event) == 0;
+   }
    
 }

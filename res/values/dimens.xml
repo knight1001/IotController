@@ -2,10 +2,15 @@
 <resources>
     
     <dimen name="topbar_text_size">22sp</dimen>
-    <dimen name="config_info_margin">5dp</dimen>
-    <dimen name="config_info_text_size">16dp</dimen>
-    <dimen name="config_info_padding">5dp</dimen>
+    <dimen name="config_text_size">16dp</dimen>
+    <dimen name="config_margin">5dp</dimen>
+    <dimen name="config_padding">5dp</dimen>
+    <dimen name="config_item_height">40dp</dimen>
     <dimen name="divider_height">1dp</dimen>
+    <dimen name="config_button_text_size">20dp</dimen>
+    <dimen name="config_progress_size">30dp</dimen>
+    
+    <integer name="ssid_max_length">32</integer>
     <integer name="encryption_key_max_length">16</integer>
     
 </resources>

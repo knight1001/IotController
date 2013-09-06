@@ -8,16 +8,16 @@ import android.util.Log;
 
 public class Utils {
 
-	private static final String APP_NAME = "IntDevice";
+	private static final String APP_NAME = "IotController";
 
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 
 	public static PackageInfo getPackageInfo(Context context) {
 	   try {
          PackageManager pm = context.getPackageManager();
          return pm.getPackageInfo(context.getPackageName(), 0);
       } catch (NameNotFoundException e) {
-//         e.printStackTrace();
+         e.printStackTrace();
       }
       return null;
 	}

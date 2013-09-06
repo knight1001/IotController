@@ -15,12 +15,16 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.http.conn.ConnectTimeoutException;
 
+import com.oosic.iot.controller.utils.Utils;
+
 import android.content.Context;
 import android.database.CursorJoiner.Result;
 import android.os.Handler;
 import android.text.TextUtils;
 
 public class IotConfig {
+   
+   private static final String TAG = "IotConfig";
 
    private static final String DEFAULT_SYNC_L_STRING = "abc";
    private static final String DEFAULT_SYNC_H_STRING = "abcdefghijklmnopqrstuvw";
@@ -51,7 +55,7 @@ public class IotConfig {
    private Thread mTransmitTask;
    private boolean mStopTransmitting = false;
    private InetSocketAddress mTransmitSocketAddr;
-   private int mTransmitPort;
+   private int mTransmitPort = DEFAULT_LOCAL_PORT;
    private Thread mListenAckTask;
    private boolean mStopListening = false;
 
@@ -65,7 +69,7 @@ public class IotConfig {
       mHandler = handler;
    }
 
-   public void setSsid(String ssid) throws IotException, NullPointerException {
+   public void setSsid(String ssid) throws Exception {
       if (TextUtils.isEmpty(ssid)) {
          throw new NullPointerException("SSID is empty");
       }
@@ -80,7 +84,7 @@ public class IotConfig {
       mGatewayIp = gatewayIp;
    }
 
-   public void setPassword(String password) throws IotException {
+   public void setPassword(String password) throws Exception {
       if (!TextUtils.isEmpty(password)
             && password.length() > MAX_LENGTH_OF_PASSWORD) {
          throw new IotException(IotException.LENGTH_OF_PASSWORD_EXCEEDS,
@@ -107,6 +111,7 @@ public class IotConfig {
    }
 
    public void start() {
+      Utils.logi(TAG, "start()");
       try {
          mTransmitTask = new TransmitSettingsTask(mHandler, mContext);
          mTransmitTask.start();
@@ -119,6 +124,7 @@ public class IotConfig {
    }
 
    public void stop() {
+      Utils.logi(TAG, "stop()");
       stopListening();
       stopTransmitting();
    }
@@ -130,17 +136,27 @@ public class IotConfig {
    }
 
    private void transmitSettings() throws Exception {
+      Utils.logi(TAG, "transmitSettings()");
       byte[] syncLBuffer = DEFAULT_SYNC_L_STRING.getBytes();
       byte[] syncHBuffer = DEFAULT_SYNC_H_STRING.getBytes();
 
       mEncryptedSettings = new SsidEncryption(mSsid, mPassword, mEncryptionKey)
             .getEncryptedData();
+      mTransmitSocketAddr = new InetSocketAddress(mGatewayIp, mTransmitPort);
       ArrayList<Integer> packets = mEncryptedSettings;
       int numberOfPackets = mEncryptedSettings.size();
       InetSocketAddress socketAddr = mTransmitSocketAddr;
       int port = mTransmitPort;
       byte[] sendBuff = makePaddedByteArray(1600);
+      Utils.logi(TAG, "transmitSettings: addr=" + socketAddr.getAddress().getHostAddress()
+            + " port=" + socketAddr.getPort());
+      StringBuilder builder = new StringBuilder();
+      for (int i = 0; i < packets.size(); i++) {
+         builder.append(packets.get(i).intValue()).append(",");
+      }
+      Utils.logi(TAG, "transmitSettings: data=" + builder.toString());
       while (!mStopTransmitting) {
+//         Utils.logi(TAG, "transmitSettings: " + System.currentTimeMillis());
          for (int i = 0; i < DEFAULT_NUMBER_OF_SETUPS; i++) {
             for (int j = 0; j < numberOfPackets; j++) {
                send(new DatagramPacket(sendBuff, (packets.get(j)).intValue(),
@@ -166,14 +182,16 @@ public class IotConfig {
 
    private void stopTransmitting() {
       mStopTransmitting = true;
-      if (Thread.currentThread() != mTransmitTask) {
+      if (mTransmitTask != null && mTransmitTask != Thread.currentThread()) {
          mTransmitTask.interrupt();
       }
    }
 
    private void stopListening() {
       mStopListening = true;
-      mListenAckSocket.close();
+      if (mListenAckSocket != null) {
+         mListenAckSocket.close();
+      }
    }
 
    private void createListenAckSocket() throws Exception {
@@ -189,6 +207,7 @@ public class IotConfig {
    }
 
    private IotConfigResult waitForAck() throws Exception {
+      Utils.logi(TAG, "waitForAck()");
       final int RECV_BUFFER_LENGTH = 16384;
       byte[] recvBuff = new byte[RECV_BUFFER_LENGTH];
       DatagramPacket recvPacket = new DatagramPacket(recvBuff, recvBuff.length);
@@ -202,9 +221,12 @@ public class IotConfig {
             mListenAckSocket.setSoTimeout(timeout);
             mListenAckSocket.receive(recvPacket);
          } catch (InterruptedIOException e) {
-            stop();
-            return new IotConfigResult(IotEvent.TIMEOUT, e);
+            e.printStackTrace();
+            continue;
+//            stop();
+//            return new IotConfigResult(IotEvent.TIMEOUT, e);
          } catch (Exception e) {
+            e.printStackTrace();
             if (!mStopListening) {
                stop();
                return new IotConfigResult(IotEvent.ERROR, e);
@@ -212,7 +234,9 @@ public class IotConfig {
             return null;
          }
 
+         Utils.logi(TAG, "waitForAck: " + System.currentTimeMillis());
          if (hasAckString(recvPacket.getData())) {
+            Utils.logi(TAG, "waitForAck: Received ACK");
             stop();
             IotConfigResult result = new IotConfigResult(IotEvent.SUCCESS);
             result.setPacket(recvPacket);
@@ -221,6 +245,7 @@ public class IotConfig {
 
          timeout = (int) (timeout - (System.nanoTime() - start) / 1000000L);
          if (timeout <= 0) {
+            Utils.logi(TAG, "waitForAck: TIMEOUT");
             stop();
             return new IotConfigResult(IotEvent.TIMEOUT);
          }
@@ -230,6 +255,8 @@ public class IotConfig {
 
    private class TransmitSettingsTask extends IotAsyncTask<Void> {
 
+      private static final String TAG = "TransmitSettingsTask";
+      
       public TransmitSettingsTask(Handler handler, Context context) {
          super(handler, context);
       }
@@ -246,13 +273,15 @@ public class IotConfig {
 
       @Override
       public void onPostExecute(Void result) {
-
+         Utils.logi(TAG, "onPostExecute: ");
       }
 
    }
 
    private class ListenAckTask extends IotAsyncTask<IotConfigResult> {
 
+      private static final String TAG = "ListenAckTask";
+      
       public ListenAckTask(Handler handler, Context context) {
          super(handler, context);
       }
@@ -269,6 +298,7 @@ public class IotConfig {
 
       @Override
       public void onPostExecute(IotConfigResult result) {
+         Utils.logi(TAG, "onPostExecute: ");
          if (result != null && mConfigListner != null) {
             mConfigListner.onConfigEvent(result.getEvent(), result.getPacket());
          }

@@ -1,65 +1,52 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/main_bg"
     android:orientation="vertical" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/topbar_bg" >
+    <RelativeLayout style="@style/TopbarLayout" >
 
         <TextView
-            android:layout_width="match_parent"
+            style="@style/TopbarText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/device_config"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/topbar_text_size"
-            android:textStyle="bold" />
+            android:layout_centerInParent="true"
+            android:text="@string/device_config" />
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/config_info_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/config_info_margin"
+        android:layout_margin="@dimen/config_margin"
         android:background="@drawable/config_info_bg"
         android:orientation="vertical" >
 
         <LinearLayout
-            android:layout_width="match_parent"
+            style="@style/ConfigLayout"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
             <TextView
                 android:id="@+id/config_ssid_label"
-                android:layout_width="match_parent"
+                style="@style/ConfigText.Label"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/config_info_padding"
                 android:layout_weight="1"
-                android:text="@string/ssid"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/config_info_text_size"
-                android:textStyle="bold" />
+                android:text="@string/ssid" />
 
             <EditText
-                android:id="@+id/config_ssid_input"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:id="@+id/config_ssid"
+                style="@style/ConfigText.Content"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/config_info_padding"
-                android:layout_marginRight="@dimen/config_info_padding"
-                android:layout_weight="1"
-                android:background="@null"
+                android:layout_weight="2"
                 android:hint="@string/ssid"
-                android:maxLength="32"
-                android:paddingLeft="@dimen/config_info_padding"
-                android:singleLine="true"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/config_info_text_size" />
+                android:maxLength="@integer/ssid_max_length" />
         </LinearLayout>
 
         <View
@@ -68,132 +55,109 @@
             android:background="@color/divider_bg" />
 
         <LinearLayout
+            style="@style/ConfigLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
             <TextView
                 android:id="@+id/config_password_label"
-                android:layout_width="match_parent"
+                style="@style/ConfigText.Label"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/config_info_padding"
                 android:layout_weight="1"
-                android:text="@string/password"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/config_info_text_size"
-                android:textStyle="bold" />
+                android:text="@string/password" />
 
             <EditText
-                android:id="@+id/config_password_input"
-                android:layout_width="match_parent"
+                android:id="@+id/config_password"
+                style="@style/ConfigText.Content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/config_info_padding"
-                android:layout_marginRight="@dimen/config_info_padding"
-                android:layout_weight="1"
-                android:background="@null"
+                android:layout_weight="2"
                 android:hint="@string/password"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
-                android:paddingLeft="@dimen/config_info_padding"
-                android:singleLine="true"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/config_info_text_size" />
+                android:text="meiyoumima" />
         </LinearLayout>
 
         <View
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="@dimen/divider_height"
             android:background="@color/divider_bg" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            style="@style/ConfigLayout"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
             <TextView
                 android:id="@+id/config_gateway_label"
-                android:layout_width="match_parent"
+                style="@style/ConfigText.Label"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/config_info_padding"
                 android:layout_weight="1"
-                android:text="@string/gateway_ip"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/config_info_text_size"
-                android:textStyle="bold" />
+                android:text="@string/gateway_ip" />
 
             <TextView
-                android:id="@+id/config_gateway_input"
-                android:layout_width="match_parent"
+                android:id="@+id/config_gateway"
+                style="@style/ConfigText.Content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/config_info_padding"
-                android:layout_marginRight="@dimen/config_info_padding"
-                android:layout_weight="1"
-                android:background="@null"
-                android:hint="@string/loopback_ip"
-                android:paddingLeft="5dp"
-                android:singleLine="true"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/config_info_text_size" />
+                android:layout_weight="2"
+                android:hint="@string/loopback_ip" />
         </LinearLayout>
 
         <View
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="@dimen/divider_height"
             android:background="@color/divider_bg" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            style="@style/ConfigLayout"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
 
             <TextView
                 android:id="@+id/config_key_label"
-                android:layout_width="match_parent"
+                style="@style/ConfigText.Label"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/config_info_padding"
                 android:layout_weight="1"
-                android:text="@string/encryption_key"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/config_info_text_size"
-                android:textStyle="bold" />
+                android:text="@string/encryption_key" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:orientation="horizontal" >
 
                 <EditText
                     android:id="@+id/config_key"
-                    android:layout_width="0dip"
+                    style="@style/ConfigText.Content"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/config_info_padding"
-                    android:layout_weight="1"
-                    android:background="@null"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/config_key_selection"
                     android:hint="@string/encryption_key"
                     android:imeOptions="actionNext"
                     android:maxLength="@integer/encryption_key_max_length"
-                    android:paddingLeft="@dimen/config_info_padding"
-                    android:singleLine="true"
-                    android:text="smartconfigAES16"
-                    android:textColor="@android:color/black"
-                    android:textSize="@dimen/config_info_text_size" />
+                    android:text="smartconfigAES16" />
 
                 <CheckBox
-                    android:id="@+id/config_key_checkbox"
+                    android:id="@id/config_key_selection"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="@dimen/config_info_padding"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:checked="true" />
-            </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
 
         <View
@@ -202,65 +166,54 @@
             android:background="@color/divider_bg" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            style="@style/ConfigLayout"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/config_padding"
             android:orientation="horizontal" >
 
             <TextView
                 android:id="@+id/config_device_name_label"
-                android:layout_width="match_parent"
+                style="@style/ConfigText.Label"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/config_info_padding"
                 android:layout_weight="1"
-                android:text="@string/device_name"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/config_info_text_size"
-                android:textStyle="bold" />
+                android:text="@string/device_name" />
 
             <EditText
                 android:id="@+id/config_device_name"
-                android:layout_width="match_parent"
+                style="@style/ConfigText.Content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/config_info_padding"
-                android:layout_marginRight="@dimen/config_info_padding"
-                android:layout_weight="1"
-                android:background="@null"
+                android:layout_weight="2"
                 android:hint="@string/device_name"
                 android:imeOptions="actionDone"
-                android:paddingLeft="@dimen/config_info_padding"
-                android:singleLine="true"
-                android:text="@string/cc3000"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/config_info_text_size" />
+                android:text="@string/cc3000" />
         </LinearLayout>
     </LinearLayout>
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/config_info_padding"
-        android:layout_marginRight="@dimen/config_info_padding"
-        android:layout_marginTop="@dimen/config_info_padding" >
+        android:layout_margin="@dimen/config_margin" >
 
-        <Button
+        <ImageButton
             android:id="@+id/config_start_btn"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@drawable/btn_bg"
-            android:gravity="center"
-            android:text="@string/start"
-            android:textColor="@android:color/white" />
+            android:src="@drawable/config_btn" />
 
         <ProgressBar
             android:id="@+id/config_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/config_progress_size"
+            android:layout_height="@dimen/config_progress_size"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/config_info_padding"
+            android:layout_margin="@dimen/config_padding"
             android:visibility="invisible" />
     </RelativeLayout>
 

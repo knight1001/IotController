@@ -7,9 +7,11 @@
     <string name="password">Password</string>
     <string name="gateway_ip">Gateway IP Address</string>
     <string name="loopback_ip">127.0.0.1</string>
-    <string name="encryption_key">Key</string>
+    <string name="encryption_key">Encryption Key</string>
     <string name="device_name">Device Name</string>
     <string name="cc3000">CC3000</string>
     <string name="start">Start</string>
+    <string name="stop">Stop</string>
+    <string name="device_config_ok">Device configure successfully!</string>
 
 </resources>
