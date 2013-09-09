@@ -10,6 +10,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -21,7 +22,7 @@ import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.text.TextUtils;
 
-public class IotManager implements IotCommand {
+public class IotManager {
 
    private static final String TAG = "IotManager";
 
@@ -73,7 +74,7 @@ public class IotManager implements IotCommand {
    public void addDeviceMacAddr(String ip, String mac) {
       mDeviceMacAddrs.put(ip, mac);
    }
-
+   
    private void requestSendingBroadcast(final String cmd) {
       new Thread(new Runnable() {
          public void run() {
@@ -200,7 +201,7 @@ public class IotManager implements IotCommand {
       String cmdString = new String(cmd);
       byte[] ip = new byte[4];
       byte[] mac = new byte[11];
-      if (STS.equalsIgnoreCase(cmdString)) {
+      if (IotCommand.STS.equalsIgnoreCase(cmdString)) {
          int number = data[3] - 48;
          System.arraycopy(data, 4, ip, 0, ip.length);
          InetAddress inetAddress;

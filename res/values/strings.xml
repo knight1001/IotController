@@ -13,5 +13,15 @@
     <string name="start">Start</string>
     <string name="stop">Stop</string>
     <string name="device_config_ok">Device configure successfully!</string>
+    <string name="command_config">Command Config</string>
+    <string name="command">Command</string>
+    <string name="command_type">Type</string>
+    <string name="local_broadcast">Local Broadcast</string>
+    <string name="local_peer_to_peer">Local Peer to Peer</string>
+    <string name="remote_server">Remote Server</string>
+    <string name="unknown_type">Unknown Type</string>
+    <string name="device_list">Device List</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

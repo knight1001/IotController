@@ -3,14 +3,21 @@
     
     <dimen name="topbar_text_size">22sp</dimen>
     <dimen name="config_text_size">16dp</dimen>
+    <dimen name="config_item_height">40dp</dimen>
     <dimen name="config_margin">5dp</dimen>
     <dimen name="config_padding">5dp</dimen>
-    <dimen name="config_item_height">40dp</dimen>
     <dimen name="divider_height">1dp</dimen>
     <dimen name="config_button_text_size">20dp</dimen>
     <dimen name="config_progress_size">30dp</dimen>
+    <dimen name="command_text_size">24sp</dimen>
+    <dimen name="command_desc_text_size">12sp</dimen>
+    <dimen name="command_btn_size">100dp</dimen>
+    <dimen name="command_config_text_size">18sp</dimen>
+    <dimen name="command_config_padding">5dp</dimen>
+    <dimen name="device_list_text_size">18sp</dimen>
     
     <integer name="ssid_max_length">32</integer>
     <integer name="encryption_key_max_length">16</integer>
+    <integer name="command_grid_columns">2</integer>
     
 </resources>

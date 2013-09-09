@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/command_config_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="@dimen/command_config_padding"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/command_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:singleLine="true"
+            android:text="@string/command"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/command_config_text_size" />
+
+        <EditText
+            android:id="@+id/command"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="left"
+            android:hint="@string/command"
+            android:singleLine="true"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/command_config_text_size" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/divider_height"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/divider_bg" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/command_type_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:singleLine="true"
+            android:text="@string/command_type"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/command_config_text_size" />
+
+        <RadioGroup
+            android:id="@+id/command_type_selection"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="vertical" >
+
+            <RadioButton
+                android:id="@+id/local_broadcast"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/local_broadcast"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/command_config_text_size" />
+
+            <RadioButton
+                android:id="@+id/local_peer_to_peer"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/local_peer_to_peer"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/command_config_text_size" />
+
+            <RadioButton
+                android:id="@+id/remote_server"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/remote_server"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/command_config_text_size" />
+        </RadioGroup>
+    </LinearLayout>
+
+</LinearLayout>
