@@ -12,6 +12,7 @@ import com.oosic.iot.controller.utils.UIUtils;
 import com.oosic.iot.controller.utils.Utils;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -115,16 +116,6 @@ public class IotControlActivity extends IotBaseActivity {
       if (cmdView != null) {
          cmdView.setTag(cmd);
          cmdView.setText(cmd.getCommand());
-         cmdView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            public void onFocusChange(View v, boolean hasFocus) {
-               if (!hasFocus) {
-                  if (v.getTag() != null) {
-                     IotCommand cmd = (IotCommand) v.getTag();
-                     cmd.setCommand(((EditText) v).getText().toString());
-                  }
-               }
-            }
-         });
       }
       RadioGroup cmdTypeView = (RadioGroup) view
             .findViewById(R.id.command_type_selection);
@@ -163,6 +154,16 @@ public class IotControlActivity extends IotBaseActivity {
             .setPositiveButton(R.string.ok,
                   new DialogInterface.OnClickListener() {
                      public void onClick(DialogInterface dialog, int which) {
+                        Dialog dlg = (Dialog) dialog;
+                        EditText cmdView = (EditText) dlg
+                              .findViewById(R.id.command);
+                        if (cmdView != null) {
+                           if (cmdView.getTag() != null) {
+                              IotCommand cmd = (IotCommand) cmdView.getTag();
+                              cmd.setCommand(cmdView.getText().toString());
+                           }
+                        }
+
                         mCommandAdapter.notifyDataSetChanged();
                      }
                   }).setNegativeButton(R.string.cancel, null).show();
@@ -174,7 +175,7 @@ public class IotControlActivity extends IotBaseActivity {
          UIUtils.showToast(this, getString(R.string.no_device));
          return;
       }
-      
+
       mDeviceAdapter = new DeviceAdapter(this, devices);
       LayoutInflater inflater = LayoutInflater.from(this);
       ListView listView = (ListView) inflater.inflate(R.layout.list, null);
