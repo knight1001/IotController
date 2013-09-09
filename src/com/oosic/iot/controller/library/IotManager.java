@@ -9,6 +9,7 @@ import java.net.MulticastSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,7 @@ public class IotManager {
    private Context mContext;
    private Handler mHandler;
    private IotConfig mConfig;
-   private Map<String, InetAddress> mDeviceSocketAddrs;
-   private Map<String, String> mDeviceMacAddrs;
+   private Map<String, IotDevice> mDevices;
    private DatagramSocket mListenLocalResponseSocket;
    private Thread mListenLocalResponseTask;
    private boolean mStopListeningLocalResponse = false;
@@ -44,8 +44,7 @@ public class IotManager {
 
    public IotManager(Context context) {
       mContext = context;
-      mDeviceSocketAddrs = new HashMap<String, InetAddress>();
-      mDeviceMacAddrs = new HashMap<String, String>();
+      mDevices = new HashMap<String, IotDevice>();
    }
 
    public void setHandler(Handler handler) {
@@ -67,15 +66,24 @@ public class IotManager {
       return mConfig;
    }
 
-   public void addDeviceSocketAddr(String ip, InetAddress addr) {
-      mDeviceSocketAddrs.put(ip, addr);
-   }
-
-   public void addDeviceMacAddr(String ip, String mac) {
-      mDeviceMacAddrs.put(ip, mac);
+   public void addDevice(IotDevice dev) {
+      if (dev != null && !TextUtils.isEmpty(dev.getIp())) {
+         mDevices.put(dev.getIp(), dev);
+      }
    }
    
-   private void requestSendingBroadcast(final String cmd) {
+   public List<IotDevice> getDeviceList() {
+      List<IotDevice> devices = null;
+      if (mDevices.size() > 0) {
+         devices = new ArrayList<IotDevice>();
+         for (Entry<String, IotDevice> entry : mDevices.entrySet()) {
+            devices.add(entry.getValue());
+         }
+      }
+      return devices;
+   }
+   
+   public void requestSendingBroadcast(final String cmd) {
       new Thread(new Runnable() {
          public void run() {
             sendBroadcast(cmd);
@@ -114,7 +122,7 @@ public class IotManager {
       }
    }
 
-   private void requestSendingLocalCommand(final String cmd) {
+   public void requestSendingLocalCommand(final String cmd) {
       new Thread(new Runnable() {
          public void run() {
             sendLocalCommand(cmd);
@@ -128,16 +136,19 @@ public class IotManager {
          DatagramPacket packet = new DatagramPacket(data, data.length);
          DatagramSocket socket = new DatagramSocket();
          packet.setPort(UDP_COMMAND_PORT);
-         for (Entry<String, InetAddress> entry : mDeviceSocketAddrs.entrySet()) {
-            packet.setAddress(entry.getValue());
+         for (Entry<String, IotDevice> entry : mDevices.entrySet()) {
             try {
+               packet.setAddress(InetAddress.getByName(entry.getValue().getIp()));
                socket.send(packet);
+            } catch (UnknownHostException e) {
+               e.printStackTrace();
+               continue;
             } catch (IOException e) {
                e.printStackTrace();
                continue;
             }
             Utils.logi(TAG, "___________sendLocalCommand: " + cmd + " -> "
-                  + entry.getValue().getHostAddress());
+                  + entry.getValue().getIp());
          }
       } catch (SocketException e) {
          e.printStackTrace();
@@ -152,7 +163,7 @@ public class IotManager {
       return mListenLocalResponseSocket;
    }
 
-   private void startListeningLocalResponse() {
+   public void startListeningLocalResponse() {
       if (mListenLocalResponseTask != null) {
          return;
       }
@@ -187,7 +198,7 @@ public class IotManager {
       mListenLocalResponseTask.start();
    }
 
-   private void stopListeningLocalResponse() {
+   public void stopListeningLocalResponse() {
       mStopListeningLocalResponse = true;
    }
 
@@ -207,10 +218,12 @@ public class IotManager {
          InetAddress inetAddress;
          try {
             inetAddress = InetAddress.getByAddress(ip);
-            mDeviceSocketAddrs.put(inetAddress.getHostAddress(), inetAddress);
+            IotDevice dev = new IotDevice();
+            dev.setIp(inetAddress.getHostAddress());
             System.arraycopy(data, 8, mac, 0, mac.length);
             String macString = getMacString(mac);
-            mDeviceMacAddrs.put(inetAddress.getHostAddress(), macString);
+            dev.setMac(macString);
+            mDevices.put(dev.getIp(), dev);
             byte status = data[19];
             Utils.logi(TAG, "________________" + cmdString + number + "/"
                   + inetAddress.getHostAddress() + "/" + macString + "/"
@@ -237,7 +250,7 @@ public class IotManager {
       }
    }
 
-   private void requestSendingServerCommand(final String cmd) {
+   public void requestSendingServerCommand(final String cmd) {
       new Thread(new Runnable() {
          public void run() {
             sendServerCommand(cmd);
@@ -250,10 +263,10 @@ public class IotManager {
       try {
          InetAddress serverAddress = InetAddress.getByName(SERVER);
          DatagramSocket socket = new DatagramSocket();
-         for (Entry<String, String> entry : mDeviceMacAddrs.entrySet()) {
+         for (Entry<String, IotDevice> entry : mDevices.entrySet()) {
             int count = 3;
             while (count-- > 0) {
-               data = cmd.concat(" ").concat(entry.getValue()).getBytes();
+               data = cmd.concat(" ").concat(entry.getValue().getMac()).getBytes();
                DatagramPacket packet = new DatagramPacket(data, data.length,
                      serverAddress, SERVER_PORT);
                try {
@@ -305,8 +318,8 @@ public class IotManager {
    }
 
    private void prepareListeningServerResponse() {
-      for (Entry<String, String> entry : mDeviceMacAddrs.entrySet()) {
-         startListeningServerResponse(entry.getValue());
+      for (Entry<String, IotDevice> entry : mDevices.entrySet()) {
+         startListeningServerResponse(entry.getValue().getMac());
       }
    }
 

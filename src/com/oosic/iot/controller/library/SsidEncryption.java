@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
-import com.oosic.iot.controller.utils.Utils;
-
 import android.text.TextUtils;
 
 public class SsidEncryption {
@@ -103,9 +101,8 @@ public class SsidEncryption {
       for (int i = 0; i < data.length; i++) {
          builder.append(data[i]).append(',');
       }
-      Utils.logi("", "_______________encodeData: " + builder.toString());
       builder.setLength(0);
-      
+
       final int DATA_OFFSET = 593;
       byte prevNibble = 0;
       int index = 0;
@@ -127,7 +124,6 @@ public class SsidEncryption {
 
          index &= 0x0f;
       }
-      Utils.logi("", "_______________: " + builder.toString());
    }
 
    public ArrayList<Integer> getEncryptedData() {

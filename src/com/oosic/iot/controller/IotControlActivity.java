@@ -7,6 +7,7 @@ import com.oosic.iot.controller.library.IotAdapter;
 import com.oosic.iot.controller.library.IotCommand;
 import com.oosic.iot.controller.library.IotCommandType;
 import com.oosic.iot.controller.library.IotDevice;
+import com.oosic.iot.controller.library.IotManager;
 import com.oosic.iot.controller.utils.UIUtils;
 import com.oosic.iot.controller.utils.Utils;
 
@@ -25,6 +26,8 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ListView;
@@ -39,6 +42,7 @@ public class IotControlActivity extends IotBaseActivity {
    private GridView mCommandGridView;
    private CommandAdapter mCommandAdapter;
    private DeviceAdapter mDeviceAdapter;
+   private IotManager mIotManager;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -47,7 +51,7 @@ public class IotControlActivity extends IotBaseActivity {
       setContentView(R.layout.activity_control);
 
       findViews();
-      initViews();
+      init();
    }
 
    private void findViews() {
@@ -55,6 +59,12 @@ public class IotControlActivity extends IotBaseActivity {
       mDeviceListBtn = (Button) findViewById(R.id.device_list_btn);
       mSearchBtn = (Button) findViewById(R.id.search_btn);
       mCommandGridView = (GridView) findViewById(R.id.command_grid);
+   }
+
+   private void init() {
+      mIotManager = getIotManager();
+
+      initViews();
    }
 
    private void initViews() {
@@ -108,7 +118,7 @@ public class IotControlActivity extends IotBaseActivity {
          cmdView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
                if (!hasFocus) {
-                  if (v.getTag() != null && v.getTag() instanceof IotCommand) {
+                  if (v.getTag() != null) {
                      IotCommand cmd = (IotCommand) v.getTag();
                      cmd.setCommand(((EditText) v).getText().toString());
                   }
@@ -131,8 +141,7 @@ public class IotControlActivity extends IotBaseActivity {
          cmdTypeView
                .setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                   public void onCheckedChanged(RadioGroup group, int checkedId) {
-                     if (group.getTag() != null
-                           && group.getTag() instanceof IotCommand) {
+                     if (group.getTag() != null) {
                         IotCommand cmd = (IotCommand) group.getTag();
                         if (checkedId == R.id.local_broadcast) {
                            cmd.setType(IotCommandType.LOCAL_BROADCAST);
@@ -160,30 +169,20 @@ public class IotControlActivity extends IotBaseActivity {
    }
 
    private void showDeviceListDialog() {
-      mDeviceAdapter = new DeviceAdapter(this, null);
+      List<IotDevice> devices = mIotManager.getDeviceList();
+      if (devices == null || devices.size() <= 0) {
+         UIUtils.showToast(this, getString(R.string.no_device));
+         return;
+      }
+      
+      mDeviceAdapter = new DeviceAdapter(this, devices);
       LayoutInflater inflater = LayoutInflater.from(this);
       ListView listView = (ListView) inflater.inflate(R.layout.list, null);
-      listView.setOnItemClickListener(new OnItemClickListener() {
-         public void onItemClick(AdapterView<?> parent, View view,
-               int position, long id) {
-            if (view.getTag() != null && view.getTag() instanceof IotDevice) {
-               IotDevice dev = (IotDevice) view.getTag();
-               dev.setSelected(!dev.isSelected());
-
-               CheckBox selView = (CheckBox) view
-                     .findViewById(R.id.device_selection);
-               if (selView != null) {
-                  selView.setChecked(dev.isSelected());
-               }
-            }
-         }
-      });
       listView.setAdapter(mDeviceAdapter);
 
       AlertDialog.Builder builder = UIUtils.getAlertDialogBuilder(this);
       builder.setIcon(R.drawable.icon).setTitle(R.string.device_list)
-            .setView(listView).setPositiveButton(R.string.ok, null)
-            .setNegativeButton(R.string.cancel, null).show();
+            .setView(listView).show();
    }
 
    private class CommandAdapter extends IotAdapter<IotCommand> {
@@ -216,7 +215,7 @@ public class IotControlActivity extends IotBaseActivity {
                cmdBtn.setText(cmd.getCommand());
                cmdBtn.setOnClickListener(new View.OnClickListener() {
                   public void onClick(View v) {
-                     if (v.getTag() != null && v.getTag() instanceof IotCommand) {
+                     if (v.getTag() != null) {
                         IotCommand cmd = (IotCommand) v.getTag();
                         // send command
                      }
@@ -224,7 +223,7 @@ public class IotControlActivity extends IotBaseActivity {
                });
                cmdBtn.setOnLongClickListener(new View.OnLongClickListener() {
                   public boolean onLongClick(View v) {
-                     if (v.getTag() != null && v.getTag() instanceof IotCommand) {
+                     if (v.getTag() != null) {
                         IotCommand cmd = (IotCommand) v.getTag();
                         showCommandConfigDialog(cmd);
                      }
@@ -254,7 +253,7 @@ public class IotControlActivity extends IotBaseActivity {
       }
 
       public DeviceAdapter(Context context, List<IotDevice> data) {
-         super(context);
+         super(context, data);
       }
 
       @Override
@@ -271,15 +270,28 @@ public class IotControlActivity extends IotBaseActivity {
 
          IotDevice dev = this.data.get(position);
          if (dev != null) {
-            TextView ipView = (Button) convertView.findViewById(R.id.device_ip);
+            TextView ipView = (TextView) convertView
+                  .findViewById(R.id.device_ip);
             if (ipView != null) {
+               ipView.setTag(dev);
                ipView.setText(dev.getIp());
             }
 
             CheckBox selView = (CheckBox) convertView
                   .findViewById(R.id.device_selection);
             if (selView != null) {
+               selView.setTag(dev);
                selView.setChecked(dev.isSelected());
+               selView
+                     .setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                        public void onCheckedChanged(CompoundButton buttonView,
+                              boolean isChecked) {
+                           IotDevice dev = (IotDevice) buttonView.getTag();
+                           if (dev != null) {
+                              dev.setSelected(isChecked);
+                           }
+                        }
+                     });
             }
 
             convertView.setTag(dev);

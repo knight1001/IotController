@@ -1,7 +1,10 @@
 package com.oosic.iot.controller;
 
+import java.net.DatagramPacket;
+
 import com.oosic.iot.controller.library.IotConfig;
 import com.oosic.iot.controller.library.IotConfigListner;
+import com.oosic.iot.controller.library.IotDevice;
 import com.oosic.iot.controller.library.IotEvent;
 import com.oosic.iot.controller.library.IotManager;
 import com.oosic.iot.controller.utils.NetworkHelper;
@@ -13,6 +16,7 @@ import android.net.DhcpInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -54,7 +58,7 @@ public class IotConfigActivity extends IotBaseActivity implements
    }
 
    private void init() {
-      mIotManager = ((IotApp) getApplication()).getIotManager();
+      mIotManager = getIotManager();
       WifiManager wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
       WifiInfo wifiInfo = wifiManager.getConnectionInfo();
       if (wifiInfo != null) {
@@ -89,6 +93,8 @@ public class IotConfigActivity extends IotBaseActivity implements
          config.setGatewayIp(mGatewayView.getText().toString());
          config.setEncryptionKey(mEncryptionKeyView.getText().toString());
          config.setAckString(mDeviceNameView.getText().toString());
+         config.setHandler(new Handler());
+         config.setConfigListner(this);
          config.start();
          // mStartBtn.setText(R.string.stop);
          mStartBtn.setSelected(true);
@@ -114,11 +120,19 @@ public class IotConfigActivity extends IotBaseActivity implements
 
    @Override
    public void onConfigEvent(IotEvent event, Object obj) {
-      Utils.logi(TAG, "onConfigEvent: " + "event=" + event + " obj=" + obj);
+      Utils.logi(TAG, "onConfigEvent: " + event + " " + obj);
       if (IotEvent.isSuccess(event)) {
+         if (obj instanceof DatagramPacket) {
+            DatagramPacket packet = (DatagramPacket) obj;
+            IotDevice dev = new IotDevice();
+            dev.setIp(packet.getAddress().getHostAddress());
+            mIotManager.addDevice(dev);
+         }
+
          stopConfig();
-         UIUtils.getAlertDialogBuilder(this).setTitle(R.string.device_config)
-               .setMessage(R.string.device_config_ok);
+         UIUtils.getAlertDialogBuilder(this)
+               .setMessage(R.string.device_config_ok)
+               .setPositiveButton(R.string.ok, null).show();
       }
    }
 

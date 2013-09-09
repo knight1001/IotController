@@ -2,12 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/device_cell_layout"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:padding="@dimen/device_list_padding" >
 
     <TextView
         android:id="@+id/device_ip"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/device_selection"
         android:layout_marginRight="10dp"
         android:ellipsize="end"

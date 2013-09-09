@@ -12,7 +12,7 @@
     <string name="cc3000">CC3000</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
-    <string name="device_config_ok">Device configure successfully!</string>
+    <string name="device_config_ok">Device configure successful!</string>
     <string name="command_config">Command Config</string>
     <string name="command">Command</string>
     <string name="command_type">Type</string>
@@ -21,6 +21,7 @@
     <string name="remote_server">Remote Server</string>
     <string name="unknown_type">Unknown Type</string>
     <string name="device_list">Device List</string>
+    <string name="no_device">No Device</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 

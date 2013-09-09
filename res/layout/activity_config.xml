@@ -79,7 +79,7 @@
                 android:hint="@string/password"
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
-                android:text="meiyoumima" />
+                android:text="12345678" />
         </LinearLayout>
 
         <View

@@ -148,15 +148,7 @@ public class IotConfig {
       InetSocketAddress socketAddr = mTransmitSocketAddr;
       int port = mTransmitPort;
       byte[] sendBuff = makePaddedByteArray(1600);
-      Utils.logi(TAG, "transmitSettings: addr=" + socketAddr.getAddress().getHostAddress()
-            + " port=" + socketAddr.getPort());
-      StringBuilder builder = new StringBuilder();
-      for (int i = 0; i < packets.size(); i++) {
-         builder.append(packets.get(i).intValue()).append(",");
-      }
-      Utils.logi(TAG, "transmitSettings: data=" + builder.toString());
       while (!mStopTransmitting) {
-//         Utils.logi(TAG, "transmitSettings: " + System.currentTimeMillis());
          for (int i = 0; i < DEFAULT_NUMBER_OF_SETUPS; i++) {
             for (int j = 0; j < numberOfPackets; j++) {
                send(new DatagramPacket(sendBuff, (packets.get(j)).intValue(),
@@ -273,7 +265,7 @@ public class IotConfig {
 
       @Override
       public void onPostExecute(Void result) {
-         Utils.logi(TAG, "onPostExecute: ");
+         Utils.logi(TAG, "onPostExecute");
       }
 
    }
@@ -298,7 +290,7 @@ public class IotConfig {
 
       @Override
       public void onPostExecute(IotConfigResult result) {
-         Utils.logi(TAG, "onPostExecute: ");
+         Utils.logi(TAG, "onPostExecute");
          if (result != null && mConfigListner != null) {
             mConfigListner.onConfigEvent(result.getEvent(), result.getPacket());
          }
