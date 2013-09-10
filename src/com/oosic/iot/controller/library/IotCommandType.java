@@ -19,7 +19,7 @@ public enum IotCommandType {
    public static boolean isRemoteServer(IotCommandType type) {
       return REMOTE_SERVER.compareTo(type) == 0;
    }
-
+   
    public static int getDescription(IotCommandType type) {
       if (type == LOCAL_BROADCAST) {
          return R.string.local_broadcast;

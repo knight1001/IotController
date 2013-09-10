@@ -1,5 +1,7 @@
 package com.oosic.iot.controller.library;
 
+import org.w3c.dom.Text;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
@@ -14,6 +16,7 @@ public class PreferenceManager {
 
    public class PreferenceItems {
       public static final String FIRST_RUN = "first_run";
+      public static final String COMMAND_BUTTON = "cmd_btn_";
    }
 
    public PreferenceManager(Context context) {
@@ -56,6 +59,28 @@ public class PreferenceManager {
          return prefs.edit().putBoolean(PreferenceItems.FIRST_RUN, value)
                .commit();
       }
+      return false;
+   }
+   
+   public IotCommand getButtonCommandByIndex(int index) {
+      String key = PreferenceItems.COMMAND_BUTTON + index;
+      SharedPreferences prefs = getAppSettingsPrefs();
+      if (prefs != null) {
+         String value = prefs.getString(key, "");
+         if (!TextUtils.isEmpty(value)) {
+            return IotCommand.parseString(value);
+         }
+      }
+      return null;
+   }
+   
+   public boolean setButtonCommandByIndex(int index, IotCommand command) {
+      String key = PreferenceItems.COMMAND_BUTTON + index;
+      SharedPreferences prefs = getAppSettingsPrefs();
+      if (prefs != null) {
+         return prefs.edit().putString(key, command.toString()).commit();
+      }
+      
       return false;
    }
 

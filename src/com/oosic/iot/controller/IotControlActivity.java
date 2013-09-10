@@ -1,13 +1,19 @@
 package com.oosic.iot.controller;
 
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.oosic.iot.controller.library.IotAdapter;
 import com.oosic.iot.controller.library.IotCommand;
 import com.oosic.iot.controller.library.IotCommandType;
+import com.oosic.iot.controller.library.IotDataListener;
 import com.oosic.iot.controller.library.IotDevice;
 import com.oosic.iot.controller.library.IotManager;
+import com.oosic.iot.controller.library.IotResult;
+import com.oosic.iot.controller.library.PreferenceManager;
 import com.oosic.iot.controller.utils.UIUtils;
 import com.oosic.iot.controller.utils.Utils;
 
@@ -17,14 +23,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -44,6 +46,7 @@ public class IotControlActivity extends IotBaseActivity {
    private CommandAdapter mCommandAdapter;
    private DeviceAdapter mDeviceAdapter;
    private IotManager mIotManager;
+   private Handler mHandler = new Handler();
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -63,9 +66,51 @@ public class IotControlActivity extends IotBaseActivity {
    }
 
    private void init() {
-      mIotManager = getIotManager();
-
+      initIotManager();
       initViews();
+   }
+
+   private void initIotManager() {
+      mIotManager = getIotManager();
+      mIotManager.setHandler(mHandler);
+      mIotManager.setLocalDataListener(new IotDataListener() {
+         public void onDataReceived(IotResult result, Object obj) {
+            if (result.isSuccess()) {
+               if (obj != null) {
+                  if (obj instanceof DatagramPacket) {
+                     processLocalResponse((DatagramPacket) obj);
+                  }
+               }
+            }
+         }
+
+         @Override
+         public void onDataSent(IotResult result, Object obj) {
+            if (obj != null && obj instanceof DatagramPacket) {
+               DatagramPacket packet = (DatagramPacket) obj;
+               if (result.isSuccess()) {
+                  UIUtils.showToast(
+                        IotControlActivity.this,
+                        getString(R.string.send_data_ok, packet.getAddress()
+                              .getHostAddress()));
+               } else {
+                  UIUtils.showToast(
+                        IotControlActivity.this,
+                        getString(R.string.send_data_error, packet.getAddress()
+                              .getHostAddress()));
+               }
+            }
+         }
+      });
+      mIotManager.setServerDataListener(new IotDataListener() {
+         public void onDataReceived(IotResult result, Object obj) {
+
+         }
+
+         @Override
+         public void onDataSent(IotResult result, Object obj) {
+         }
+      });
    }
 
    private void initViews() {
@@ -77,7 +122,9 @@ public class IotControlActivity extends IotBaseActivity {
 
       mSearchBtn.setOnClickListener(new View.OnClickListener() {
          public void onClick(View v) {
-            // search devices
+            mIotManager.requestSendingBroadcast("SCH".getBytes());
+            UIUtils.showToast(IotControlActivity.this,
+                  getString(R.string.find_device));
          }
       });
 
@@ -89,9 +136,16 @@ public class IotControlActivity extends IotBaseActivity {
       });
 
       List<IotCommand> commands = new ArrayList<IotCommand>();
+      PreferenceManager prefsManager = getPrefsManager();
       for (int i = 0; i < 6; i++) {
-         IotCommand cmd = new IotCommand("CD" + i);
-         cmd.setType(IotCommandType.LOCAL_BROADCAST);
+         IotCommand cmd = null;
+         if (prefsManager != null) {
+            cmd = prefsManager.getButtonCommandByIndex(i);
+         }
+         if (cmd == null) {
+            cmd = new IotCommand("CD" + i, IotCommandType.LOCAL_BROADCAST);
+         }
+         cmd.setIndex(i);
          commands.add(cmd);
       }
       mCommandAdapter = new CommandAdapter(this, commands);
@@ -104,13 +158,15 @@ public class IotControlActivity extends IotBaseActivity {
    }
 
    private void showCommandConfigDialog(IotCommand cmd) {
+      IotCommand old = new IotCommand(String.copyValueOf(cmd.getCommand()
+            .toCharArray()), cmd.getType());
       LayoutInflater inflater = LayoutInflater.from(this);
       ViewGroup view = (ViewGroup) inflater.inflate(R.layout.command_config,
             null);
       ViewGroup layout = (ViewGroup) view
             .findViewById(R.id.command_config_layout);
       if (layout != null) {
-         layout.setTag(cmd);
+         layout.setTag(old);
       }
       EditText cmdView = (EditText) view.findViewById(R.id.command);
       if (cmdView != null) {
@@ -161,12 +217,41 @@ public class IotControlActivity extends IotBaseActivity {
                            if (cmdView.getTag() != null) {
                               IotCommand cmd = (IotCommand) cmdView.getTag();
                               cmd.setCommand(cmdView.getText().toString());
+
+                              PreferenceManager prefsManager = getPrefsManager();
+                              if (prefsManager != null) {
+                                 prefsManager.setButtonCommandByIndex(
+                                       cmd.getIndex(), cmd);
+                              }
                            }
                         }
 
                         mCommandAdapter.notifyDataSetChanged();
                      }
-                  }).setNegativeButton(R.string.cancel, null).show();
+                  })
+            .setNegativeButton(R.string.cancel,
+                  new DialogInterface.OnClickListener() {
+                     public void onClick(DialogInterface dialog, int which) {
+                        Dialog dlg = (Dialog) dialog;
+                        ViewGroup layout = (ViewGroup) dlg
+                              .findViewById(R.id.command_config_layout);
+                        if (layout != null) {
+                           IotCommand old = (IotCommand) layout.getTag();
+                           if (old != null) {
+                              EditText cmdView = (EditText) dlg
+                                    .findViewById(R.id.command);
+                              if (cmdView != null) {
+                                 if (cmdView.getTag() != null) {
+                                    IotCommand cmd = (IotCommand) cmdView
+                                          .getTag();
+                                    cmd.setCommand(old.getCommand());
+                                    cmd.setType(old.getType());
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }).show();
    }
 
    private void showDeviceListDialog() {
@@ -184,6 +269,55 @@ public class IotControlActivity extends IotBaseActivity {
       AlertDialog.Builder builder = UIUtils.getAlertDialogBuilder(this);
       builder.setIcon(R.drawable.icon).setTitle(R.string.device_list)
             .setView(listView).show();
+   }
+
+   private void processLocalResponse(DatagramPacket packet) {
+      if (packet.getData().length < 3) {
+         return;
+      }
+      byte[] data = packet.getData();
+      byte[] cmd = new byte[3];
+      System.arraycopy(data, 0, cmd, 0, cmd.length);
+      String cmdString = new String(cmd);
+      byte[] ip = new byte[4];
+      byte[] mac = new byte[11];
+      if (IotCommand.STS.equalsIgnoreCase(cmdString)) {
+         int number = data[3] - 48;
+         System.arraycopy(data, 4, ip, 0, ip.length);
+         InetAddress inetAddress;
+         try {
+            inetAddress = InetAddress.getByAddress(ip);
+            IotDevice dev = new IotDevice();
+            dev.setIp(inetAddress.getHostAddress());
+            System.arraycopy(data, 8, mac, 0, mac.length);
+            String macString = getMacString(mac);
+            dev.setMac(macString);
+            mIotManager.addDevice(dev);
+            byte status = data[19];
+            String result = cmdString + number + "/"
+                  + inetAddress.getHostAddress() + "/" + macString + "/"
+                  + status;
+            Utils.logi(TAG, "________________" + result);
+            UIUtils.getAlertDialogBuilder(this).setMessage(result)
+                  .setPositiveButton(R.string.ok, null).show();
+         } catch (UnknownHostException e) {
+            e.printStackTrace();
+         }
+      } else {
+         Utils.logi(TAG, "____________processLocalResponse: " + cmdString);
+      }
+   }
+
+   public static String getMacString(byte[] data) {
+      StringBuilder builder = new StringBuilder();
+      for (int i = 0; i < data.length; i++) {
+         if (i % 2 == 0) {
+            builder.append(data[i]);
+         } else {
+            builder.append(":");
+         }
+      }
+      return builder.toString();
    }
 
    private class CommandAdapter extends IotAdapter<IotCommand> {
@@ -218,7 +352,17 @@ public class IotControlActivity extends IotBaseActivity {
                   public void onClick(View v) {
                      if (v.getTag() != null) {
                         IotCommand cmd = (IotCommand) v.getTag();
-                        // send command
+                        if (IotCommandType.isLocalBroadcast(cmd.getType())) {
+                           mIotManager.requestSendingBroadcast(cmd.getCommand()
+                                 .getBytes());
+                        } else if (IotCommandType.isLocalPeerToPeer(cmd
+                              .getType())) {
+                           mIotManager.requestSendingLocalCommand(cmd
+                                 .getCommand().getBytes());
+                        } else if (IotCommandType.isRemoteServer(cmd.getType())) {
+                           mIotManager.requestSendingServerCommand(cmd
+                                 .getCommand().getBytes());
+                        }
                      }
                   }
                });
@@ -276,6 +420,13 @@ public class IotControlActivity extends IotBaseActivity {
             if (ipView != null) {
                ipView.setTag(dev);
                ipView.setText(dev.getIp());
+            }
+
+            TextView macView = (TextView) convertView
+                  .findViewById(R.id.device_mac);
+            if (macView != null) {
+               macView.setTag(dev);
+               macView.setText(dev.getMac());
             }
 
             CheckBox selView = (CheckBox) convertView

@@ -12,6 +12,7 @@ import com.oosic.iot.controller.utils.UIUtils;
 import com.oosic.iot.controller.utils.Utils;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -86,47 +87,80 @@ public class IotConfigActivity extends IotBaseActivity implements
    }
 
    private void startConfig() {
-      IotConfig config = mIotManager.getConfig();
-      try {
-         config.setSsid(mSsidView.getText().toString());
-         config.setPassword(mPasswordView.getText().toString());
-         config.setGatewayIp(mGatewayView.getText().toString());
-         config.setEncryptionKey(mEncryptionKeyView.getText().toString());
-         config.setAckString(mDeviceNameView.getText().toString());
-         config.setHandler(new Handler());
-         config.setConfigListner(this);
-         config.start();
-         // mStartBtn.setText(R.string.stop);
-         mStartBtn.setSelected(true);
-         mProgressBar.setVisibility(View.VISIBLE);
-      } catch (Exception e) {
-         e.printStackTrace();
+      if (!isConfigInProgress()) {
+         IotConfig config = mIotManager.getConfig();
+         try {
+            config.setSsid(mSsidView.getText().toString());
+            config.setPassword(mPasswordView.getText().toString());
+            config.setGatewayIp(mGatewayView.getText().toString());
+            config.setEncryptionKey(mEncryptionKeyView.getText().toString());
+            config.setAckString(mDeviceNameView.getText().toString());
+            config.setHandler(new Handler());
+            config.setConfigListner(this);
+            config.start();
+            // mStartBtn.setText(R.string.stop);
+            mStartBtn.setSelected(true);
+            mProgressBar.setVisibility(View.VISIBLE);
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
       }
    }
 
    private void stopConfig() {
-      mIotManager.getConfig().stop();
-      // mStartBtn.setText(R.string.start);
-      mStartBtn.setSelected(false);
-      mProgressBar.setVisibility(View.INVISIBLE);
+      if (isConfigInProgress()) {
+         mIotManager.getConfig().stop();
+         // mStartBtn.setText(R.string.start);
+         mStartBtn.setSelected(false);
+         mProgressBar.setVisibility(View.INVISIBLE);
+      }
+   }
+
+   private boolean isConfigInProgress() {
+      return mProgressBar.getVisibility() == View.VISIBLE;
+   }
+
+   private void showExitAlertDialog() {
+      UIUtils
+            .getAlertDialogBuilder(this)
+            .setMessage(R.string.exit_alert_on_config)
+            .setPositiveButton(R.string.ok,
+                  new DialogInterface.OnClickListener() {
+                     public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                     }
+                  }).setNegativeButton(R.string.cancel, null).show();
    }
 
    @Override
    public void onBackPressed() {
+      if (isConfigInProgress()) {
+         showExitAlertDialog();
+         return;
+      }
       super.onBackPressed();
+   }
+
+   @Override
+   public void onDestroy() {
+      super.onDestroy();
 
       stopConfig();
    }
 
    @Override
    public void onConfigEvent(IotEvent event, Object obj) {
-      Utils.logi(TAG, "onConfigEvent: " + event + " " + obj);
+      Utils.logi(TAG, "onConfigEvent: " + event);
       if (IotEvent.isSuccess(event)) {
          if (obj instanceof DatagramPacket) {
             DatagramPacket packet = (DatagramPacket) obj;
-            IotDevice dev = new IotDevice();
-            dev.setIp(packet.getAddress().getHostAddress());
-            mIotManager.addDevice(dev);
+            String ip = packet.getAddress().getHostAddress();
+            Utils.logi(TAG, "onConfigEvent: device=" + ip);
+            if (!mIotManager.hasDevice(ip)) {
+               IotDevice dev = new IotDevice();
+               dev.setIp(ip);
+               mIotManager.addDevice(dev);
+            }
          }
 
          stopConfig();

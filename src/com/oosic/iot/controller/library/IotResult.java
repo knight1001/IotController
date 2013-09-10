@@ -36,7 +36,7 @@ public class IotResult {
    }
    
    public boolean isSuccess() {
-      return this.event.ordinal() == IotEvent.SUCCESS.ordinal();
+      return IotEvent.SUCCESS.compareTo(this.event) == 0;
    }
    
 }

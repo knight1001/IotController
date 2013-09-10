@@ -2,5 +2,6 @@
 
     <color name="transparent">#00000000</color>
     <color name="divider_bg">#E1E1E1</color>
+    <color name="device_mac_grey">#E1E1E1</color>
 
 </resources>

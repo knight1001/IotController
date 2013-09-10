@@ -5,18 +5,34 @@
     android:layout_height="fill_parent"
     android:padding="@dimen/device_list_padding" >
 
-    <TextView
-        android:id="@+id/device_ip"
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/device_selection"
-        android:layout_marginRight="10dp"
-        android:ellipsize="end"
-        android:gravity="left"
-        android:singleLine="true"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/device_list_text_size" />
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/device_ip"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="left"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/device_list_text_size" />
+        
+        <TextView
+            android:id="@+id/device_mac"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="left"
+            android:singleLine="true"
+            android:textColor="@color/device_mac_grey"
+            android:textSize="@dimen/device_list_small_text_size" />
+    </LinearLayout>
 
     <CheckBox
         android:id="@id/device_selection"

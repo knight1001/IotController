@@ -22,6 +22,10 @@
     <string name="unknown_type">Unknown Type</string>
     <string name="device_list">Device List</string>
     <string name="no_device">No Device</string>
+    <string name="exit_alert_on_config">Device configure is in progress, exit now?</string>
+    <string name="find_device">Finding Device...</string>
+    <string name="send_data_ok">Successfully sent to %s</string>
+    <string name="send_data_error">Failed to send to %s</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 

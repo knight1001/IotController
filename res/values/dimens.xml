@@ -15,6 +15,7 @@
     <dimen name="command_config_text_size">18sp</dimen>
     <dimen name="command_config_padding">5dp</dimen>
     <dimen name="device_list_text_size">18sp</dimen>
+    <dimen name="device_list_small_text_size">12sp</dimen>
     <dimen name="device_list_padding">5dp</dimen>
     
     <integer name="ssid_max_length">32</integer>

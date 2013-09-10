@@ -1,6 +1,7 @@
 package com.oosic.iot.controller.library;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -17,10 +18,12 @@ import java.util.Map.Entry;
 
 import com.oosic.iot.controller.utils.Utils;
 
+import android.R.id;
 import android.content.Context;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
+import android.provider.ContactsContract.Contacts.Data;
 import android.text.TextUtils;
 
 public class IotManager {
@@ -39,8 +42,8 @@ public class IotManager {
    private DatagramSocket mListenLocalResponseSocket;
    private Thread mListenLocalResponseTask;
    private boolean mStopListeningLocalResponse = false;
-   private IotResponseListener mLocalResponseListener;
-   private IotResponseListener mServerResponseListener;
+   private IotDataListener mLocalDataListener;
+   private IotDataListener mServerDataListener;
 
    public IotManager(Context context) {
       mContext = context;
@@ -51,12 +54,12 @@ public class IotManager {
       mHandler = handler;
    }
 
-   public void setLocalResponseListener(IotResponseListener listener) {
-      mLocalResponseListener = listener;
+   public void setLocalDataListener(IotDataListener listener) {
+      mLocalDataListener = listener;
    }
 
-   public void setServerResponseListener(IotResponseListener listener) {
-      mServerResponseListener = listener;
+   public void setServerDataListener(IotDataListener listener) {
+      mServerDataListener = listener;
    }
 
    public IotConfig getConfig() {
@@ -66,12 +69,16 @@ public class IotManager {
       return mConfig;
    }
 
+   public boolean hasDevice(String ip) {
+      return mDevices.containsKey(ip);
+   }
+
    public void addDevice(IotDevice dev) {
       if (dev != null && !TextUtils.isEmpty(dev.getIp())) {
          mDevices.put(dev.getIp(), dev);
       }
    }
-   
+
    public List<IotDevice> getDeviceList() {
       List<IotDevice> devices = null;
       if (mDevices.size() > 0) {
@@ -82,37 +89,51 @@ public class IotManager {
       }
       return devices;
    }
-   
-   public void requestSendingBroadcast(final String cmd) {
+
+   public void requestSendingBroadcast(final byte[] data) {
       new Thread(new Runnable() {
          public void run() {
-            sendBroadcast(cmd);
+            sendBroadcast(data);
          }
       }).start();
    }
 
-   private void sendBroadcast(String cmd) {
+   private void sendBroadcast(byte[] data) {
       WifiManager wifiManager = (WifiManager) mContext
             .getSystemService(Context.WIFI_SERVICE);
       DhcpInfo dhcpInfo = wifiManager.getDhcpInfo();
-      byte[] data = new byte[4];
-      data[0] = (byte) (dhcpInfo.gateway & 0xff);
-      data[1] = (byte) (dhcpInfo.gateway >> 8 & 0xff);
-      data[2] = (byte) (dhcpInfo.gateway >> 16 & 0xff);
-      data[3] = (byte) 255;
-      for (int i = 0; i < data.length; i++) {
-         Utils.logi(TAG, "____________gateway: [" + i + "]=" + data[i]);
+      byte[] ip = new byte[4];
+      ip[0] = (byte) (dhcpInfo.gateway & 0xff);
+      ip[1] = (byte) (dhcpInfo.gateway >> 8 & 0xff);
+      ip[2] = (byte) (dhcpInfo.gateway >> 16 & 0xff);
+      ip[3] = (byte) 255;
+      for (int i = 0; i < ip.length; i++) {
+         Utils.logi(TAG, "____________gateway: [" + i + "]=" + ip[i]);
       }
+      IotEvent event = IotEvent.ERROR;
       try {
-         InetAddress addr = InetAddress.getByAddress(data);
+         InetAddress addr = InetAddress.getByAddress(ip);
          DatagramSocket socket = new MulticastSocket();
          socket.setBroadcast(true);
-         data = cmd.getBytes();
          DatagramPacket packet = new DatagramPacket(data, data.length);
          packet.setAddress(addr);
          socket.setSoTimeout(10000);
          socket.send(packet);
-         Utils.logi(TAG, "___________sendBroadcast: " + cmd);
+
+         Utils.logi(TAG, "___________sendBroadcast: " + new String(data));
+         if (mHandler != null && mLocalDataListener != null) {
+            final DatagramPacket resultData = packet;
+            mHandler.post(new Runnable() {
+               public void run() {
+                  mLocalDataListener.onDataSent(
+                        new IotResult(IotEvent.SUCCESS), resultData);
+               }
+            });
+         }
+         return;
+      } catch (InterruptedIOException e) {
+         event = IotEvent.TIMEOUT;
+         e.printStackTrace();
       } catch (UnknownHostException e) {
          e.printStackTrace();
       } catch (SocketException e) {
@@ -120,26 +141,52 @@ public class IotManager {
       } catch (IOException e) {
          e.printStackTrace();
       }
+      final IotEvent result = event;
+      if (mHandler != null && mLocalDataListener != null) {
+         mHandler.post(new Runnable() {
+            public void run() {
+               mLocalDataListener.onDataSent(new IotResult(result), null);
+            }
+         });
+      }
    }
 
-   public void requestSendingLocalCommand(final String cmd) {
+   public void requestSendingLocalCommand(final byte[] data) {
       new Thread(new Runnable() {
          public void run() {
-            sendLocalCommand(cmd);
+            sendLocalCommand(data);
          }
       }).start();
    }
 
-   private void sendLocalCommand(String cmd) {
+   private void sendLocalCommand(byte[] data) {
       try {
-         byte[] data = cmd.getBytes();
-         DatagramPacket packet = new DatagramPacket(data, data.length);
          DatagramSocket socket = new DatagramSocket();
-         packet.setPort(UDP_COMMAND_PORT);
          for (Entry<String, IotDevice> entry : mDevices.entrySet()) {
+            IotDevice dev = entry.getValue();
+            if (!dev.isSelected()) {
+               continue;
+            }
+
             try {
-               packet.setAddress(InetAddress.getByName(entry.getValue().getIp()));
+               DatagramPacket packet = new DatagramPacket(data, data.length);
+               packet.setPort(UDP_COMMAND_PORT);
+               packet.setAddress(InetAddress.getByName(dev.getIp()));
                socket.send(packet);
+
+               Utils.logi(TAG, "___________sendLocalCommand: "
+                     + new String(data) + " -> " + dev.getIp());
+               if (mHandler != null && mLocalDataListener != null) {
+                  final DatagramPacket resultData = packet;
+                  mHandler.post(new Runnable() {
+                     public void run() {
+                        mLocalDataListener.onDataSent(new IotResult(
+                              IotEvent.SUCCESS), resultData);
+                     }
+                  });
+               }
+            } catch (InterruptedIOException e) {
+               e.printStackTrace();
             } catch (UnknownHostException e) {
                e.printStackTrace();
                continue;
@@ -147,8 +194,6 @@ public class IotManager {
                e.printStackTrace();
                continue;
             }
-            Utils.logi(TAG, "___________sendLocalCommand: " + cmd + " -> "
-                  + entry.getValue().getIp());
          }
       } catch (SocketException e) {
          e.printStackTrace();
@@ -179,9 +224,15 @@ public class IotManager {
 
                   Utils.logi(TAG, "___________from: "
                         + packet.getAddress().toString());
-                  Utils.logi(TAG, "___________SocketAddress: "
-                        + packet.getSocketAddress().toString());
-                  processLocalResponse(packet);
+                  final DatagramPacket data = packet;
+                  if (mHandler != null) {
+                     mHandler.post(new Runnable() {
+                        public void run() {
+                           mLocalDataListener.onDataReceived(new IotResult(
+                                 IotEvent.SUCCESS), data);
+                        }
+                     });
+                  }
                } catch (SocketException e) {
                   e.printStackTrace();
                } catch (IOException e) {
@@ -202,72 +253,32 @@ public class IotManager {
       mStopListeningLocalResponse = true;
    }
 
-   private void processLocalResponse(DatagramPacket packet) {
-      if (packet.getData().length < 3) {
-         return;
-      }
-      byte[] data = packet.getData();
-      byte[] cmd = new byte[3];
-      System.arraycopy(data, 0, cmd, 0, cmd.length);
-      String cmdString = new String(cmd);
-      byte[] ip = new byte[4];
-      byte[] mac = new byte[11];
-      if (IotCommand.STS.equalsIgnoreCase(cmdString)) {
-         int number = data[3] - 48;
-         System.arraycopy(data, 4, ip, 0, ip.length);
-         InetAddress inetAddress;
-         try {
-            inetAddress = InetAddress.getByAddress(ip);
-            IotDevice dev = new IotDevice();
-            dev.setIp(inetAddress.getHostAddress());
-            System.arraycopy(data, 8, mac, 0, mac.length);
-            String macString = getMacString(mac);
-            dev.setMac(macString);
-            mDevices.put(dev.getIp(), dev);
-            byte status = data[19];
-            Utils.logi(TAG, "________________" + cmdString + number + "/"
-                  + inetAddress.getHostAddress() + "/" + macString + "/"
-                  + status);
-            if (mHandler != null && mLocalResponseListener != null) {
-               final IotCommandResponse response = new IotCommandResponse();
-               response.setIp(inetAddress.getHostAddress());
-               response.setMac(macString);
-               response.setPort(packet.getPort());
-               response.setCommand(cmdString);
-               response.setResult(String.valueOf(status));
-               mHandler.post(new Runnable() {
-                  public void run() {
-                     mLocalResponseListener.onReceiveResponse(IotEvent.SUCCESS,
-                           response);
-                  }
-               });
-            }
-         } catch (UnknownHostException e) {
-            e.printStackTrace();
-         }
-      } else {
-         Utils.logi(TAG, "____________processLocalResponse: " + cmdString);
-      }
-   }
-
-   public void requestSendingServerCommand(final String cmd) {
+   public void requestSendingServerCommand(final byte[] data) {
       new Thread(new Runnable() {
          public void run() {
-            sendServerCommand(cmd);
+            sendServerCommand(data);
          }
       }).start();
    }
 
-   private void sendServerCommand(String cmd) {
-      byte[] data = cmd.getBytes();
+   private void sendServerCommand(byte[] data) {
       try {
          InetAddress serverAddress = InetAddress.getByName(SERVER);
          DatagramSocket socket = new DatagramSocket();
          for (Entry<String, IotDevice> entry : mDevices.entrySet()) {
+            IotDevice dev = entry.getValue();
+            if (!dev.isSelected()) {
+               continue;
+            }
+
             int count = 3;
             while (count-- > 0) {
-               data = cmd.concat(" ").concat(entry.getValue().getMac()).getBytes();
-               DatagramPacket packet = new DatagramPacket(data, data.length,
+               byte[] mac = dev.getMac().getBytes();
+               byte[] buff = new byte[data.length + 1 + mac.length];
+               System.arraycopy(data, 0, buff, 0, data.length);
+               buff[data.length] = ' ';
+               System.arraycopy(mac, 0, buff, data.length + 1, mac.length);
+               DatagramPacket packet = new DatagramPacket(buff, buff.length,
                      serverAddress, SERVER_PORT);
                try {
                   socket.send(packet);
@@ -275,8 +286,8 @@ public class IotManager {
                   e.printStackTrace();
                   continue;
                }
-               Utils.logi(TAG, "___________sendServerCommand: " + cmd + " -> "
-                     + entry.getValue());
+               Utils.logi(TAG, "___________sendServerCommand: "
+                     + new String(data) + " -> " + dev.getMac());
                byte[] recvData = new byte[32];
                DatagramPacket recvPacket = new DatagramPacket(recvData,
                      recvData.length);
@@ -291,11 +302,10 @@ public class IotManager {
                }
                String result = new String(recvPacket.getData(), 0,
                      recvPacket.getLength());
-               Utils.logi(TAG, "___________Received message: " + result);
-               Utils.logi(TAG, "___________from: "
+               Utils.logi(TAG, "___________Received: " + result + " from "
                      + recvPacket.getAddress().toString());
-               if ("OK".equals(result)) {
-                  prepareListeningServerResponse();
+               if ("OKA".equals(result)) {
+                  startListeningServerResponse(dev.getMac());
                   break;
                }
             }
@@ -304,22 +314,6 @@ public class IotManager {
          e.printStackTrace();
       } catch (UnknownHostException e) {
          e.printStackTrace();
-      }
-   }
-
-   private void requestListeningServerResponse() {
-      if (mHandler != null) {
-         mHandler.postDelayed(new Runnable() {
-            public void run() {
-               prepareListeningServerResponse();
-            }
-         }, 1000);
-      }
-   }
-
-   private void prepareListeningServerResponse() {
-      for (Entry<String, IotDevice> entry : mDevices.entrySet()) {
-         startListeningServerResponse(entry.getValue().getMac());
       }
    }
 
@@ -337,7 +331,7 @@ public class IotManager {
          DatagramSocket socket = new DatagramSocket();
          socket.setSoTimeout(5000);
          socket.setReuseAddress(true);
-         String cmd = "CHK ".concat(mac);
+         String cmd = "CHK".concat(" ").concat(mac);
          DatagramPacket packet = new DatagramPacket(cmd.getBytes(),
                cmd.getBytes().length);
          packet.setAddress(serverAddr);
@@ -345,8 +339,7 @@ public class IotManager {
          try {
             socket.setSoTimeout(5000);
             socket.send(packet);
-            Utils.logi(TAG, "___________listenServerResponse: " + cmd + " to "
-                  + mac);
+            Utils.logi(TAG, "___________listenServerResponse: " + cmd);
          } catch (IOException e) {
             e.printStackTrace();
             return;
@@ -363,19 +356,18 @@ public class IotManager {
          }
          String result = new String(recvPacket.getData(), 0,
                recvPacket.getLength());
-         Utils.logi(TAG, "___________Received message: " + result);
-         Utils.logi(TAG, "___________from: "
+         Utils.logi(TAG, "___________Received: " + result + " from "
                + recvPacket.getAddress().toString());
          if ("DON".equals(result)) {
-            if (mHandler != null && mServerResponseListener != null) {
+            if (mHandler != null && mServerDataListener != null) {
                IotCommandResponse response = new IotCommandResponse();
                response.setCommand(result);
                response.setResult("");
-               mServerResponseListener.onReceiveResponse(IotEvent.SUCCESS,
-                     response);
+               // mServerResponseListener.onReceiveResponse(IotEvent.SUCCESS,
+               // response);
             }
          } else {
-            requestListeningServerResponse();
+            startListeningServerResponse(mac);
          }
       } catch (SocketException e) {
          e.printStackTrace();
@@ -417,18 +409,6 @@ public class IotManager {
       } catch (IOException e) {
          e.printStackTrace();
       }
-   }
-
-   public static String getMacString(byte[] data) {
-      StringBuilder builder = new StringBuilder();
-      for (int i = 0; i < data.length; i++) {
-         if (i % 2 == 0) {
-            builder.append(data[i]);
-         } else {
-            builder.append(":");
-         }
-      }
-      return builder.toString();
    }
 
 }
