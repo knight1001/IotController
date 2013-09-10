@@ -4,7 +4,7 @@ public class IotDevice {
 
    private String ip;
    private String mac;
-   private boolean selected = false;
+   private boolean selected = true;
 
    public String getIp() {
       return this.ip;

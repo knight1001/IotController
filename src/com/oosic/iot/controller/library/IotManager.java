@@ -117,6 +117,7 @@ public class IotManager {
          socket.setBroadcast(true);
          DatagramPacket packet = new DatagramPacket(data, data.length);
          packet.setAddress(addr);
+         packet.setPort(UDP_COMMAND_PORT);
          socket.setSoTimeout(10000);
          socket.send(packet);
 
@@ -214,35 +215,41 @@ public class IotManager {
       }
       mListenLocalResponseTask = new Thread(new Runnable() {
          public void run() {
-            while (!mStopListeningLocalResponse) {
-               byte[] buff = new byte[32];
-               DatagramPacket packet = new DatagramPacket(buff, buff.length);
-               try {
-                  DatagramSocket socket = getListenLocalResponseSocket();
-                  socket.setReuseAddress(true);
-                  socket.receive(packet);
+            try {
+               DatagramSocket socket = new DatagramSocket(UDP_RESPONSE_PORT);
+               Utils.logi(TAG, "listeningLocalResponse...");
+               while (!mStopListeningLocalResponse) {
+                  byte[] buff = new byte[32];
+                  DatagramPacket packet = new DatagramPacket(buff, buff.length);
+                  try {
+                     socket.setReuseAddress(true);
+                     socket.receive(packet);
 
-                  Utils.logi(TAG, "___________from: "
-                        + packet.getAddress().toString());
-                  final DatagramPacket data = packet;
-                  if (mHandler != null) {
-                     mHandler.post(new Runnable() {
-                        public void run() {
-                           mLocalDataListener.onDataReceived(new IotResult(
-                                 IotEvent.SUCCESS), data);
-                        }
-                     });
+                     Utils.logi(TAG, "___________Received from: "
+                           + packet.getAddress().toString());
+                     final DatagramPacket data = packet;
+                     if (mHandler != null) {
+                        mHandler.post(new Runnable() {
+                           public void run() {
+                              mLocalDataListener.onDataReceived(new IotResult(
+                                    IotEvent.SUCCESS), data);
+                           }
+                        });
+                     }
+                  } catch (InterruptedIOException e) {
+                     e.printStackTrace();
+                     continue;
+                  } catch (SocketException e) {
+                     e.printStackTrace();
+                     break;
+                  } catch (IOException e) {
+                     e.printStackTrace();
+                     break;
                   }
-               } catch (SocketException e) {
-                  e.printStackTrace();
-               } catch (IOException e) {
-                  e.printStackTrace();
                }
-            }
-
-            if (mListenLocalResponseSocket != null) {
-               mListenLocalResponseSocket.close();
-               mListenLocalResponseSocket = null;
+               socket.close();
+            } catch (SocketException e) {
+               e.printStackTrace();
             }
          }
       });
@@ -250,7 +257,9 @@ public class IotManager {
    }
 
    public void stopListeningLocalResponse() {
+      Utils.logi(TAG, "stopListeningLocalResponse()");
       mStopListeningLocalResponse = true;
+      mListenLocalResponseTask = null;
    }
 
    public void requestSendingServerCommand(final byte[] data) {

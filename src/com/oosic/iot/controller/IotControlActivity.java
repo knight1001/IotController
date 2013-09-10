@@ -122,6 +122,7 @@ public class IotControlActivity extends IotBaseActivity {
 
       mSearchBtn.setOnClickListener(new View.OnClickListener() {
          public void onClick(View v) {
+            mIotManager.startListeningLocalResponse();
             mIotManager.requestSendingBroadcast("SCH".getBytes());
             UIUtils.showToast(IotControlActivity.this,
                   getString(R.string.find_device));
@@ -137,7 +138,7 @@ public class IotControlActivity extends IotBaseActivity {
 
       List<IotCommand> commands = new ArrayList<IotCommand>();
       PreferenceManager prefsManager = getPrefsManager();
-      for (int i = 0; i < 6; i++) {
+      for (int i = 1; i <= 8; i++) {
          IotCommand cmd = null;
          if (prefsManager != null) {
             cmd = prefsManager.getButtonCommandByIndex(i);
@@ -155,6 +156,13 @@ public class IotControlActivity extends IotBaseActivity {
    @Override
    public void onBackPressed() {
       super.onBackPressed();
+   }
+   
+   @Override
+   public void onDestroy() {
+      super.onDestroy();
+      
+      mIotManager.stopListeningLocalResponse();
    }
 
    private void showCommandConfigDialog(IotCommand cmd) {
@@ -305,6 +313,12 @@ public class IotControlActivity extends IotBaseActivity {
          }
       } else {
          Utils.logi(TAG, "____________processLocalResponse: " + cmdString);
+         String ipAddr = packet.getAddress().getHostAddress();
+         if (!mIotManager.hasDevice(ipAddr)) {
+            IotDevice dev = new IotDevice();
+            dev.setIp(ipAddr);
+            mIotManager.addDevice(dev);
+         }
       }
    }
 
@@ -350,6 +364,7 @@ public class IotControlActivity extends IotBaseActivity {
                cmdBtn.setText(cmd.getCommand());
                cmdBtn.setOnClickListener(new View.OnClickListener() {
                   public void onClick(View v) {
+                     mIotManager.startListeningLocalResponse();
                      if (v.getTag() != null) {
                         IotCommand cmd = (IotCommand) v.getTag();
                         if (IotCommandType.isLocalBroadcast(cmd.getType())) {

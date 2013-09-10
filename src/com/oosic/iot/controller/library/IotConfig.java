@@ -113,9 +113,11 @@ public class IotConfig {
    public void start() {
       Utils.logi(TAG, "start()");
       try {
+         mStopTransmitting = false;
          mTransmitTask = new TransmitSettingsTask(mHandler, mContext);
          mTransmitTask.start();
 
+         mStopListening = false;
          mListenAckTask = new ListenAckTask(mHandler, mContext);
          mListenAckTask.start();
       } catch (Exception e) {
