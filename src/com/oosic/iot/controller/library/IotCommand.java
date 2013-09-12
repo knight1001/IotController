@@ -4,8 +4,17 @@ import android.text.TextUtils;
 
 public class IotCommand {
 
-   public static final String STS = "STS";
+   public static final String REG = "REG";
+   public static final String GET = "GET";
    public static final String CHK = "CHK";
+   public static final String SCH = "SCH";
+   public static final String STS = "STS";
+   public static final String DON = "DON";
+   public static final String NON = "NON";
+   public static final String PND = "PND";
+   public static final String OKA = "OKA";
+   public static final String NIL = "NIL";
+   public static final String FUL = "FUL";
 
    private static final String SEPARATOR = ",";
 

@@ -26,6 +26,12 @@
     <string name="find_device">Finding Device...</string>
     <string name="send_data_ok">Successfully sent to %s</string>
     <string name="send_data_error">Failed to send to %s</string>
+    <string name="send_to_server_ok">Successfully sent %s to server</string>
+    <string name="device_not_register">Device %s not register</string>
+    <string name="server_full">Server is full now</string>
+    <string name="command_already_taken">Command has already been taken</string>
+    <string name="received_command_result">Received COMMAND: %1$s\nRESULT: %2$s</string>
+    <string name="sent_command_result">Sent COMMAND: %1$s\nRESULT: %2$s</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
 
