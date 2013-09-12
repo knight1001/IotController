@@ -97,15 +97,11 @@ public class IotControlActivity extends IotBaseActivity {
             if (obj != null && obj instanceof DatagramPacket) {
                DatagramPacket packet = (DatagramPacket) obj;
                if (result.isSuccess()) {
-                  UIUtils.showToast(
-                        IotControlActivity.this,
-                        getString(R.string.send_data_ok, packet.getAddress()
-                              .getHostAddress()));
+                  showToast(getString(R.string.send_data_ok, packet
+                        .getAddress().getHostAddress()));
                } else {
-                  UIUtils.showToast(
-                        IotControlActivity.this,
-                        getString(R.string.send_data_error, packet.getAddress()
-                              .getHostAddress()));
+                  showToast(getString(R.string.send_data_error, packet
+                        .getAddress().getHostAddress()));
                }
             }
          }
@@ -115,7 +111,7 @@ public class IotControlActivity extends IotBaseActivity {
             if (obj != null && obj instanceof IotCommandResponse) {
                IotCommandResponse response = (IotCommandResponse) obj;
                if (IotCommand.DON.equals(response.getResult())) {
-                  showMessageDialog(getString(R.string.command_already_taken));
+                  showToast(getString(R.string.command_already_taken));
                } else {
                   showMessageDialog(getString(R.string.received_command_result,
                         response.getCommand() + " " + response.getMac(),
@@ -128,14 +124,18 @@ public class IotControlActivity extends IotBaseActivity {
          public void onDataSent(IotResult result, Object obj) {
             if (obj != null && obj instanceof IotCommandResponse) {
                IotCommandResponse response = (IotCommandResponse) obj;
-               if (IotCommand.OKA.equals(response.getResult())) {
-                  showMessageDialog(getString(R.string.send_to_server_ok,
-                        response.getCommand() + " " + response.getMac()));
-               } else if (IotCommand.NON.equals(response.getResult())) {
-                  showMessageDialog(getString(R.string.device_not_register,
-                        response.getMac()));
-               } else if (IotCommand.FUL.equals(response.getResult())) {
-                  showMessageDialog(getString(R.string.server_full));
+               if (!IotCommand.REG.equals(response.getCommand())
+                     && !IotCommand.GET.equals(response.getCommand())
+                     && !IotCommand.CHK.equals(response.getCommand())) {
+                  if (IotCommand.OKA.equals(response.getResult())) {
+                     showToast(getString(R.string.send_to_server_ok,
+                           response.getCommand() + " " + response.getMac()));
+                  } else if (IotCommand.NON.equals(response.getResult())) {
+                     showToast(getString(R.string.device_not_register,
+                           response.getMac()));
+                  } else if (IotCommand.FUL.equals(response.getResult())) {
+                     showToast(getString(R.string.server_full));
+                  }
                } else {
                   showMessageDialog(getString(R.string.sent_command_result,
                         response.getCommand() + " " + response.getMac(),
@@ -157,8 +157,7 @@ public class IotControlActivity extends IotBaseActivity {
          public void onClick(View v) {
             mIotManager.startListeningLocalResponse();
             mIotManager.requestSendingBroadcast(IotCommand.SCH.getBytes());
-            UIUtils.showToast(IotControlActivity.this,
-                  getString(R.string.find_device));
+            showToast(getString(R.string.find_device));
          }
       });
 
@@ -196,6 +195,10 @@ public class IotControlActivity extends IotBaseActivity {
       super.onDestroy();
 
       mIotManager.stopListeningLocalResponse();
+   }
+
+   private void showToast(String msg) {
+      UIUtils.showToast(this, msg);
    }
 
    private void showMessageDialog(String msg) {
@@ -303,7 +306,7 @@ public class IotControlActivity extends IotBaseActivity {
    private void showDeviceListDialog() {
       List<IotDevice> devices = mIotManager.getDeviceList();
       if (devices == null || devices.size() <= 0) {
-         UIUtils.showToast(this, getString(R.string.no_device));
+         showToast(getString(R.string.no_device));
          return;
       }
 

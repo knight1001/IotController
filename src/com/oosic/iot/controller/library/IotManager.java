@@ -102,17 +102,16 @@ public class IotManager {
       WifiManager wifiManager = (WifiManager) mContext
             .getSystemService(Context.WIFI_SERVICE);
       DhcpInfo dhcpInfo = wifiManager.getDhcpInfo();
-      byte[] ip = new byte[4];
-      ip[0] = (byte) (dhcpInfo.gateway & 0xff);
-      ip[1] = (byte) (dhcpInfo.gateway >> 8 & 0xff);
-      ip[2] = (byte) (dhcpInfo.gateway >> 16 & 0xff);
-      ip[3] = (byte) 255;
-      for (int i = 0; i < ip.length; i++) {
-         Utils.logi(TAG, "____________gateway: [" + i + "]=" + ip[i]);
-      }
+      int ipInt = dhcpInfo.gateway | ~dhcpInfo.netmask;
+      byte[] ipBytes = new byte[4];
+      ipBytes[0] = (byte) (ipInt & 0xff);
+      ipBytes[1] = (byte) (ipInt >> 8 & 0xff);
+      ipBytes[2] = (byte) (ipInt >> 16 & 0xff);
+      ipBytes[3] = (byte) (ipInt >> 24 & 0xff);
       IotEvent event = IotEvent.ERROR;
       try {
-         InetAddress addr = InetAddress.getByAddress(ip);
+         InetAddress addr = InetAddress.getByAddress(ipBytes);
+         Utils.logi(TAG, "sendBroadcast: " + addr.getHostAddress());
          DatagramSocket socket = new MulticastSocket();
          socket.setBroadcast(true);
          DatagramPacket packet = new DatagramPacket(data, data.length);
