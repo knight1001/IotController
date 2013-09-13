@@ -308,6 +308,8 @@ public class IotManager {
                } catch (IOException e) {
                   e.printStackTrace();
                   continue;
+               } finally {
+                  socket.close();
                }
                final String devMac = dev.getMac();
                final String result = new String(recvPacket.getData(), 0,
@@ -382,6 +384,16 @@ public class IotManager {
          try {
             socket.setSoTimeout(10000);
             socket.receive(recvPacket);
+         } catch (InterruptedIOException e) {
+            e.printStackTrace();
+            if (mHandler != null) {
+               mHandler.postDelayed(new Runnable() {
+                  public void run() {
+                     startListeningServerResponse(mac);
+                  }
+               }, 10000);
+            }
+            return;
          } catch (IOException e) {
             e.printStackTrace();
             return;
