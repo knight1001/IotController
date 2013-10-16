@@ -74,11 +74,10 @@ public class IotControlActivity extends IotBaseActivity {
    private void initIotManager() {
       mIotManager = getIotManager();
 
-      // XTEST
-      IotDevice dev = new IotDevice();
-      dev.setIp("none");
-      dev.setMac("11:22:33:44:55:66");
-      mIotManager.addDevice(dev);
+//      IotDevice dev = new IotDevice();
+//      dev.setIp("none");
+//      dev.setMac("11:22:33:44:55:66");
+//      mIotManager.addDevice(dev);
 
       mIotManager.setHandler(mHandler);
       mIotManager.setLocalDataListener(new IotDataListener() {
