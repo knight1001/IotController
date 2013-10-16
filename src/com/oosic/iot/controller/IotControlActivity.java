@@ -74,10 +74,10 @@ public class IotControlActivity extends IotBaseActivity {
    private void initIotManager() {
       mIotManager = getIotManager();
 
-//      IotDevice dev = new IotDevice();
-//      dev.setIp("none");
-//      dev.setMac("11:22:33:44:55:66");
-//      mIotManager.addDevice(dev);
+      // IotDevice dev = new IotDevice();
+      // dev.setIp("none");
+      // dev.setMac("11:22:33:44:55:66");
+      // mIotManager.addDevice(dev);
 
       mIotManager.setHandler(mHandler);
       mIotManager.setLocalDataListener(new IotDataListener() {
@@ -366,7 +366,8 @@ public class IotControlActivity extends IotBaseActivity {
       StringBuilder builder = new StringBuilder();
       for (int i = 0; i < data.length; i++) {
          if (i % 2 == 0) {
-            builder.append(data[i]);
+            builder.append(Integer.toHexString(data[i] >> 4 & 0x0f)).append(
+                  Integer.toHexString(data[i] & 0x0f));
          } else {
             builder.append(":");
          }
