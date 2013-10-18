@@ -10,7 +10,7 @@ public class Utils {
 
 	private static final String APP_NAME = "IotController";
 
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 
 	public static PackageInfo getPackageInfo(Context context) {
 	   try {
