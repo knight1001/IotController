@@ -30,7 +30,6 @@
             android:gravity="left"
             android:hint="@string/command"
             android:singleLine="true"
-            android:textColor="@android:color/black"
             android:textSize="@dimen/command_config_text_size" />
     </LinearLayout>
 

@@ -5,7 +5,6 @@ import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -18,19 +17,17 @@ import java.util.Map.Entry;
 
 import com.oosic.iot.controller.utils.Utils;
 
-import android.R.id;
 import android.content.Context;
 import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
-import android.provider.ContactsContract.Contacts.Data;
 import android.text.TextUtils;
 
 public class IotManager {
 
    private static final String TAG = "IotManager";
 
-   private static final String SERVER = "38.lzjgo.us";
+   private static final String SERVER = "180.168.145.238";//"38.lzjgo.us";
    private static final int SERVER_PORT = 18882;
    private static final int UDP_COMMAND_PORT = 50050;
    private static final int UDP_RESPONSE_PORT = 51050;
