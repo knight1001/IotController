@@ -7,26 +7,26 @@
 
     <RelativeLayout style="@style/TopbarLayout" >
 
-        <Button
+        <ImageView
             android:id="@+id/device_list_btn"
             style="@style/TopbarButton"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/ico_dev_list" />
+            android:src="@drawable/ico_dev_list" />
 
-        <Button
+        <ImageView
             android:id="@+id/search_btn"
             style="@style/TopbarButton"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/config_btn"
-            android:background="@drawable/ico_search" />
+            android:src="@drawable/ico_search" />
 
-        <Button
+        <ImageView
             android:id="@id/config_btn"
             style="@style/TopbarButton"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/ico_config" />
+            android:src="@drawable/ico_config" />
     </RelativeLayout>
 
     <GridView

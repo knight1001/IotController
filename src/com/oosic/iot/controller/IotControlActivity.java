@@ -34,6 +34,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -42,7 +43,7 @@ public class IotControlActivity extends IotBaseActivity {
 
    private static final String TAG = "IotControlActivity";
 
-   private Button mConfigBtn, mDeviceListBtn, mSearchBtn;
+   private ImageView mConfigBtn, mDeviceListBtn, mSearchBtn;
    private GridView mCommandGridView;
    private CommandAdapter mCommandAdapter;
    private DeviceAdapter mDeviceAdapter;
@@ -60,9 +61,9 @@ public class IotControlActivity extends IotBaseActivity {
    }
 
    private void findViews() {
-      mConfigBtn = (Button) findViewById(R.id.config_btn);
-      mDeviceListBtn = (Button) findViewById(R.id.device_list_btn);
-      mSearchBtn = (Button) findViewById(R.id.search_btn);
+      mConfigBtn = (ImageView) findViewById(R.id.config_btn);
+      mDeviceListBtn = (ImageView) findViewById(R.id.device_list_btn);
+      mSearchBtn = (ImageView) findViewById(R.id.search_btn);
       mCommandGridView = (GridView) findViewById(R.id.command_grid);
    }
 

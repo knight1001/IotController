@@ -78,8 +78,7 @@
                 android:layout_weight="2"
                 android:hint="@string/password"
                 android:imeOptions="actionDone"
-                android:inputType="textPassword"
-                android:text="12345678" />
+                android:inputType="textPassword" />
         </LinearLayout>
 
         <View

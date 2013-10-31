@@ -273,7 +273,7 @@ public class IotManager {
          final String cmd = new String(data, 0, 3);
          for (Entry<String, IotDevice> entry : mDevices.entrySet()) {
             IotDevice dev = entry.getValue();
-            if (!dev.isSelected()) {
+            if (!dev.isSelected() || TextUtils.isEmpty(dev.getMac())) {
                continue;
             }
 
