@@ -74,10 +74,10 @@ public class IotControlActivity extends IotBaseActivity {
    private void initIotManager() {
       mIotManager = getIotManager();
 
-      // IotDevice dev = new IotDevice();
-      // dev.setIp("none");
-      // dev.setMac("11:22:33:44:55:66");
-      // mIotManager.addDevice(dev);
+       IotDevice dev = new IotDevice();
+       dev.setIp("192.168.1.201");
+       dev.setMac("11:22:33:44:55:66");
+       mIotManager.addDevice(dev);
 
       mIotManager.setHandler(mHandler);
       mIotManager.setLocalDataListener(new IotDataListener() {
@@ -154,16 +154,36 @@ public class IotControlActivity extends IotBaseActivity {
 
       mSearchBtn.setOnClickListener(new View.OnClickListener() {
          public void onClick(View v) {
-            mIotManager.startListeningLocalResponse();
-            mIotManager.requestSendingBroadcast(IotCommand.SCH.getBytes());
-            showToast(getString(R.string.find_device));
+            byte[] cmd = new byte[6];
+            cmd[0] = (byte) 0xc9;
+            cmd[1] = 0x50;
+            cmd[2] = (byte) 0xae;
+            cmd[3] = 0x01;
+            cmd[4] = 0x01;
+            cmd[5] = 0x01;
+//            cmd[6] = 0x01;
+//               mIotManager.requestSendingLocalCommand(cmd);
+            mIotManager.requestSendingTcpCommand(cmd);
+//            mIotManager.startListeningLocalResponse();
+//            mIotManager.requestSendingBroadcast(IotCommand.SCH.getBytes());
+//            showToast(getString(R.string.find_device));
          }
       });
 
       mConfigBtn.setOnClickListener(new View.OnClickListener() {
          public void onClick(View v) {
-            startActivity(new Intent(IotControlActivity.this,
-                  IotConfigActivity.class));
+            byte[] cmd = new byte[6];
+            cmd[0] = (byte) 0xc9;
+            cmd[1] = 0x50;
+            cmd[2] = (byte) 0xae;
+            cmd[3] = 0x01;
+            cmd[4] = 0x01;
+            cmd[5] = 0x00;
+//            cmd[6] = 0x01;
+//               mIotManager.requestSendingLocalCommand(cmd);
+            mIotManager.requestSendingTcpCommand(cmd);
+//            startActivity(new Intent(IotControlActivity.this,
+//                  IotConfigActivity.class));
          }
       });
 

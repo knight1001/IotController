@@ -7,6 +7,7 @@
 
     <style name="Theme.Activity">
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:background">@drawable/bg</item>
     </style>
     
     <style name="TopbarLayout">

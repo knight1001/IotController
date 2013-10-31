@@ -34,5 +34,29 @@
     <string name="sent_command_result">Sent COMMAND: %1$s\nRESULT: %2$s</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    
+    <!-- light & sensor control -->
+    <string name="theme_list">情景控制</string>
+    <string name="light_list">灯控列表</string>
+    <string name="temperature">室温</string>
+    <string name="humidity">湿度</string>
+    <string name="fan">风扇</string>
+    <string name="all_on">全开</string>
+    <string name="all_off">全关</string>
+    <string name="on">开</string>
+    <string name="off">关</string>
+    <string name="porch">回家</string>
+    <string name="dining_room">用餐</string>
+    <string name="theater">影院</string>
+    <string name="bathroom">洗浴</string>
+    <string name="bedroom">入睡</string>
+    <string name="custom">自定义</string>
+    <string name="door_light">进门灯</string>
+    <string name="porch_light">走廊灯</string>
+    <string name="living_room_main_light">客厅主灯</string>
+    <string name="living_room_surround_light">客厅景观灯</string>
+    <string name="reading_room_light">书房灯</string>
+    <string name="master_bedroom_light">主卧灯</string>
+    <string name="secondary_bedroom_light">次卧灯</string>
 
 </resources>
