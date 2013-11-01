@@ -3,7 +3,6 @@
     android:id="@+id/theme_cell_layout"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/theme_btn_bg"
     android:orientation="vertical" >
 
     <ImageView

@@ -25,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -160,6 +161,10 @@ public class LightControlActivity extends IotBaseActivity {
       mThemeGridView.setOnItemClickListener(new OnItemClickListener() {
          public void onItemClick(AdapterView<?> parent, View view,
                int position, long id) {
+            if (position >= mThemeAdapter.getCount() - 1) {
+               return;
+            }
+            
             Map<String, LightItem> map = new HashMap<String, LightItem>();
             for (Entry<String, LightItem> entry : mLightMap.entrySet()) {
                map.put(entry.getKey(), entry.getValue());
@@ -181,6 +186,19 @@ public class LightControlActivity extends IotBaseActivity {
                   sendCommand(entry.getValue(), data);
                }
             }
+         }
+      });
+      mThemeGridView.setOnItemSelectedListener(new OnItemSelectedListener() {
+         public void onItemSelected(AdapterView<?> parent, View view, int position,
+               long id) {
+            if (view != null) {
+	            view.setSelected(true);
+            }
+         }
+
+         @Override
+         public void onNothingSelected(AdapterView<?> parent) {
+            
          }
       });
       mThemeGridView.setAdapter(mThemeAdapter);
@@ -212,6 +230,8 @@ public class LightControlActivity extends IotBaseActivity {
             turnOffAllLights();
          }
       });
+      mThemeGridView.requestFocus();
+      mThemeGridView.requestFocusFromTouch();
    }
 
    private void turnOnAllLights() {

@@ -51,6 +51,7 @@
                 android:fadingEdge="vertical"
                 android:fadingEdgeLength="0dp"
                 android:fastScrollEnabled="false"
+                android:focusable="true"
                 android:horizontalSpacing="0dp"
                 android:listSelector="@android:color/transparent"
                 android:numColumns="3"
@@ -87,7 +88,8 @@
                     android:layout_width="@dimen/light_action_ico_size"
                     android:layout_height="@dimen/light_action_ico_size"
                     android:layout_toLeftOf="@+id/light_on_prompt"
-                    android:background="@drawable/ico_light_all" />
+                    android:background="@drawable/ico_light_all"
+                    android:focusable="true" />
 
                 <TextView
                     android:id="@+id/light_on_prompt"
@@ -106,7 +108,8 @@
                     android:layout_height="@dimen/light_action_ico_size"
                     android:layout_marginLeft="@dimen/light_action_gap"
                     android:layout_toLeftOf="@+id/light_off_prompt"
-                    android:background="@drawable/ico_light_all" />
+                    android:background="@drawable/ico_light_all"
+                    android:focusable="true" />
 
                 <TextView
                     android:id="@+id/light_off_prompt"
