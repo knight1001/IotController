@@ -25,6 +25,7 @@
     <!-- light & sensor control -->
     <dimen name="logo_margin_h">121dp</dimen>
     <dimen name="logo_margin_v">55dp</dimen>
+    <dimen name="light_body_margin_t">40dp</dimen>
     <dimen name="middle_gap">41dp</dimen>
     <dimen name="body_height">612dp</dimen>
     <dimen name="body_padding">5dp</dimen>

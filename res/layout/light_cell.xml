@@ -4,32 +4,40 @@
     android:layout_width="fill_parent"
     android:layout_height="@dimen/light_cell_height"
     android:background="@drawable/light_bg"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp" >
 
     <TextView
         android:id="@+id/light_cell_title"
         android:layout_width="@dimen/light_cell_title_width"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:gravity="left"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        android:textSize="20dp" />
 
     <ImageView
+        android:id="@+id/light_cell_arrow_l"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ico_arrow_l" />
+        android:background="@drawable/ico_arrow_l"
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/light_cell_status"
         android:layout_width="@dimen/light_cell_status_width"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
         android:gravity="center"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        android:textSize="20dp" />
 
     <ImageView
+        android:id="@+id/light_cell_arrow_r"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ico_arrow_r" />
+        android:background="@drawable/ico_arrow_r"
+        android:scaleType="fitCenter" />
 
 </LinearLayout>

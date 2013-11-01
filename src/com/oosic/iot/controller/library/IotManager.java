@@ -163,7 +163,7 @@ public class IotManager {
       }).start();
    }
 
-   private static String toHexString(byte[] buff, int offset, int length) {
+   public static String toHexString(byte[] buff, int offset, int length) {
       StringBuffer sb = new StringBuffer();
       for (int i = offset; i < length; i++) {
          sb.append(Integer.toHexString(buff[i] >> 4 & 0x0f)).append(
@@ -483,23 +483,39 @@ public class IotManager {
       return null;
    }
 
-   public void requestSendingUdpPacket(final DatagramSocket socket,
-         final DatagramPacket packet, final Handler handler,
+   public void requestSendingUdpData(final byte[] data, final String ip,
+         final int port, final DatagramSocket socket, final Handler handler,
          final IotDataListener listener) {
       new Thread(new Runnable() {
          public void run() {
-            sendUdpPacket(socket, packet, handler, listener);
+            sendUdpData(data, ip, port, socket, handler, listener);
          }
       }).start();
+   }
+
+   public void sendUdpData(byte[] data, String ip, int port,
+         DatagramSocket socket, Handler handler, IotDataListener listener) {
+      if (socket == null || socket.isClosed() || !socket.isConnected()) {
+         socket = genUdpSocket(ip, port);
+      }
+      DatagramPacket packet = genUdpPacket(data, ip, port);
+      if (socket != null && packet != null) {
+         sendUdpPacket(socket, packet, handler, listener);
+      }
    }
 
    public void sendUdpPacket(final DatagramSocket socket,
          DatagramPacket packet, final Handler handler,
          final IotDataListener listener) {
       try {
-         if (!socket.isClosed() && !socket.isConnected()) {
+         if (!socket.isClosed() && socket.isConnected()) {
             socket.send(packet);
 
+            Utils.log(
+                  TAG,
+                  "sendUdpPacket: "
+                        + IotManager.toHexString(packet.getData(), 0,
+                              packet.getData().length));
             if (handler != null && listener != null) {
                handler.post(new Runnable() {
                   public void run() {
@@ -515,10 +531,15 @@ public class IotManager {
             socket.setSoTimeout(10000);
             socket.receive(recvPacket);
 
+            Utils.log(
+                  TAG,
+                  "sendUdpPacket: response="
+                        + IotManager.toHexString(recvPacket.getData(), 0,
+                              recvPacket.getLength()));
             if (handler != null && listener != null) {
                handler.post(new Runnable() {
                   public void run() {
-                     listener.onDataSent(new IotResult(IotEvent.SUCCESS),
+                     listener.onDataReceived(new IotResult(IotEvent.SUCCESS),
                            recvPacket);
                   }
                });

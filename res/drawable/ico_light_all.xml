@@ -2,7 +2,10 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:state_focused="true" android:drawable="@drawable/ico_alloff_hl" />
+    <item android:state_selected="true" android:state_focused="true" android:drawable="@drawable/ico_allon_hl" />
+    <item android:state_selected="true" android:state_focused="false" android:drawable="@drawable/ico_allon_normal" />
+    <item android:state_selected="false" android:state_focused="true" android:drawable="@drawable/ico_alloff_hl" />
+    <item android:state_selected="false" android:state_focused="false" android:drawable="@drawable/ico_alloff_normal" />
     <item android:drawable="@drawable/ico_alloff_normal" />
 
 </selector>

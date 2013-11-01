@@ -10,6 +10,9 @@ import android.util.DisplayMetrics;
 
 public class IotApp extends Application {
 
+   public static final float DEFAULT_SCREEN_WIDTH = 1920.0f;
+   public static final float DEFAULT_SCREEN_HEIGHT = 1080.0f;
+   
    private ActivityStack mActivityStack;
    private PreferenceManager mPrefsManager;
    private IotManager mIotManager;

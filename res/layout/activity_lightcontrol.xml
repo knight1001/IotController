@@ -1,98 +1,50 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_marginBottom="@dimen/logo_margin_v"
-    android:layout_marginLeft="@dimen/logo_margin_h"
-    android:layout_marginRight="@dimen/logo_margin_h"
-    android:layout_marginTop="@dimen/logo_margin_v" >
+    android:background="@drawable/bg" >
 
     <ImageView
+        android:id="@+id/light_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/logo_margin_h"
+        android:layout_marginTop="@dimen/logo_margin_v"
         android:background="@drawable/logo" />
 
     <LinearLayout
-        android:id="@+id/sensor_header"
+        android:id="@+id/light_body_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/sensor_body"
+        android:layout_below="@id/light_logo"
+        android:layout_marginLeft="@dimen/logo_margin_h"
+        android:layout_marginRight="@dimen/logo_margin_h"
+        android:layout_marginTop="@dimen/light_body_margin_t"
         android:orientation="horizontal" >
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/theme_list"
-            android:textColor="@android:color/white" />
-
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/middle_gap"
-            android:layout_weight="1"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:text="@string/light_list"
-                android:textColor="@android:color/white" />
-
-            <ImageView
-                android:id="@+id/btn_light_on"
-                android:layout_width="@dimen/light_action_ico_size"
-                android:layout_height="@dimen/light_action_ico_size"
-                android:layout_toLeftOf="@+id/light_on_prompt"
-                android:background="@drawable/ico_light_all" />
-
-            <TextView
-                android:id="@+id/light_on_prompt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/btn_light_off"
-                android:text="@string/all_on"
-                android:textColor="@android:color/white" />
-
-            <ImageView
-                android:id="@+id/btn_light_off"
-                android:layout_width="@dimen/light_action_ico_size"
-                android:layout_height="@dimen/light_action_ico_size"
-                android:layout_marginLeft="@dimen/light_action_gap"
-                android:layout_toLeftOf="@+id/light_off_prompt"
-                android:background="@drawable/ico_light_all" />
-
-            <TextView
-                android:id="@+id/light_off_prompt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="@string/all_off"
-                android:textColor="@android:color/white" />
-        </RelativeLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/sensor_body"
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/body_height"
-        android:layout_centerInParent="true"
-        android:orientation="horizontal"
-        android:padding="@dimen/body_padding" >
-
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/theme_grid_layout"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1"
-            android:background="@drawable/body_bg" >
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/theme_list"
+                android:textColor="@android:color/white"
+                android:textSize="24dp" />
 
             <GridView
                 android:id="@+id/theme_grid"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/body_bg"
                 android:cacheColorHint="#00000000"
                 android:columnWidth="0dp"
                 android:fadeScrollbars="true"
@@ -106,25 +58,80 @@
                 android:smoothScrollbar="true"
                 android:stretchMode="columnWidth"
                 android:verticalSpacing="0dp" />
-        </RelativeLayout>
+        </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/light_list_layout"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_marginLeft="@dimen/middle_gap"
             android:layout_weight="1"
-            android:background="@drawable/body_bg" >
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/light_header"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="@string/light_list"
+                    android:textColor="@android:color/white"
+                    android:textSize="24dp" />
+
+                <ImageView
+                    android:id="@+id/btn_light_on"
+                    android:layout_width="@dimen/light_action_ico_size"
+                    android:layout_height="@dimen/light_action_ico_size"
+                    android:layout_toLeftOf="@+id/light_on_prompt"
+                    android:background="@drawable/ico_light_all" />
+
+                <TextView
+                    android:id="@+id/light_on_prompt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/btn_light_off"
+                    android:gravity="center_vertical"
+                    android:text="@string/all_on"
+                    android:textColor="@android:color/white"
+                    android:textSize="24dp" />
+
+                <ImageView
+                    android:id="@+id/btn_light_off"
+                    android:layout_width="@dimen/light_action_ico_size"
+                    android:layout_height="@dimen/light_action_ico_size"
+                    android:layout_marginLeft="@dimen/light_action_gap"
+                    android:layout_toLeftOf="@+id/light_off_prompt"
+                    android:background="@drawable/ico_light_all" />
+
+                <TextView
+                    android:id="@+id/light_off_prompt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/all_off"
+                    android:textColor="@android:color/white"
+                    android:textSize="24dp" />
+            </RelativeLayout>
 
             <ListView
                 android:id="@+id/light_list"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/body_bg"
                 android:cacheColorHint="#00000000"
                 android:divider="#5921a5da"
                 android:fastScrollEnabled="false"
                 android:listSelector="@drawable/light_bg"
                 android:scrollbars="none" />
-        </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>

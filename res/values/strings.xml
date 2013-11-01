@@ -58,5 +58,7 @@
     <string name="reading_room_light">书房灯</string>
     <string name="master_bedroom_light">主卧灯</string>
     <string name="secondary_bedroom_light">次卧灯</string>
+    <string name="dining_room_light">餐厅灯</string>
+    <string name="bathroom_light">浴室灯</string>
 
 </resources>
