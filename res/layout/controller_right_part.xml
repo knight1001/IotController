@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/controller_w"
+    android:layout_height="match_parent"
+    android:background="@drawable/area_bg"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/btn_vol_up"
+                style="@style/TVNormalBtn"
+                android:text="音量+" />
+
+            <Button
+                android:id="@+id/btn_vol_down"
+                style="@style/TVNormalBtn"
+                android:text="音量-" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:orientation="vertical" >
+
+            <Button
+                android:id="@+id/btn_next_channel"
+                style="@style/TVNormalBtn"
+                android:text="节目+" />
+
+            <Button
+                android:id="@+id/btn_prev_channel"
+                style="@style/TVNormalBtn"
+                android:text="节目-" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="12dp" >
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/btn_digital_1"
+            style="@style/TVDigtalBtn"
+            android:text="1" />
+
+        <Button
+            android:id="@+id/btn_digital_2"
+            style="@style/TVDigtalBtn"
+            android:layout_centerHorizontal="true"
+            android:text="2" />
+
+        <Button
+            android:id="@+id/btn_digital_3"
+            style="@style/TVDigtalBtn"
+            android:layout_alignParentRight="true"
+            android:text="3" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/btn_digital_4"
+            style="@style/TVDigtalBtn"
+            android:text="4" />
+
+        <Button
+            android:id="@+id/btn_digital_5"
+            style="@style/TVDigtalBtn"
+            android:layout_centerHorizontal="true"
+            android:text="5" />
+
+        <Button
+            android:id="@+id/btn_digital_6"
+            style="@style/TVDigtalBtn"
+            android:layout_alignParentRight="true"
+            android:text="6" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/btn_digital_7"
+            style="@style/TVDigtalBtn"
+            android:text="7" />
+
+        <Button
+            android:id="@+id/btn_digital_8"
+            style="@style/TVDigtalBtn"
+            android:layout_centerHorizontal="true"
+            android:text="8" />
+
+        <Button
+            android:id="@+id/btn_digital_9"
+            style="@style/TVDigtalBtn"
+            android:layout_alignParentRight="true"
+            android:text="9" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <Button
+            android:id="@+id/btn_sleep"
+            style="@style/TVDigtalBtn"
+            android:text="睡眠" />
+
+        <Button
+            android:id="@+id/btn_digital_0"
+            style="@style/TVDigtalBtn"
+            android:layout_centerHorizontal="true"
+            android:text="0" />
+
+        <Button
+            android:id="@+id/btn_study"
+            style="@style/TVDigtalBtn"
+            android:layout_alignParentRight="true"
+            android:text="学习" />
+    </RelativeLayout>
+
+</LinearLayout>

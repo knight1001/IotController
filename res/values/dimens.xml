@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
+
     <dimen name="topbar_text_size">22sp</dimen>
     <dimen name="config_text_size">16dp</dimen>
     <dimen name="config_item_height">40dp</dimen>
@@ -17,11 +17,11 @@
     <dimen name="device_list_text_size">18sp</dimen>
     <dimen name="device_list_small_text_size">12sp</dimen>
     <dimen name="device_list_padding">5dp</dimen>
-    
+
     <integer name="ssid_max_length">32</integer>
     <integer name="encryption_key_max_length">16</integer>
     <integer name="command_grid_columns">2</integer>
-    
+
     <!-- light & sensor control -->
     <dimen name="logo_margin_h">121dp</dimen>
     <dimen name="logo_margin_v">55dp</dimen>
@@ -39,5 +39,6 @@
     <dimen name="light_cell_height">80dp</dimen>
     <dimen name="light_cell_title_width">160dp</dimen>
     <dimen name="light_cell_status_width">460dp</dimen>
-    
+    <dimen name="controller_w">370dp</dimen>
+
 </resources>

@@ -164,7 +164,7 @@ public class LightControlActivity extends IotBaseActivity {
             if (position >= mThemeAdapter.getCount() - 1) {
                return;
             }
-            
+
             Map<String, LightItem> map = new HashMap<String, LightItem>();
             for (Entry<String, LightItem> entry : mLightMap.entrySet()) {
                map.put(entry.getKey(), entry.getValue());
@@ -189,16 +189,16 @@ public class LightControlActivity extends IotBaseActivity {
          }
       });
       mThemeGridView.setOnItemSelectedListener(new OnItemSelectedListener() {
-         public void onItemSelected(AdapterView<?> parent, View view, int position,
-               long id) {
+         public void onItemSelected(AdapterView<?> parent, View view,
+               int position, long id) {
             if (view != null) {
-	            view.setSelected(true);
+               view.setSelected(true);
             }
          }
 
          @Override
          public void onNothingSelected(AdapterView<?> parent) {
-            
+
          }
       });
       mThemeGridView.setAdapter(mThemeAdapter);
@@ -346,30 +346,28 @@ public class LightControlActivity extends IotBaseActivity {
       }
       mLightSocketMap.clear();
    }
-   
-   private void configDevices() {
-      mLightConfigMap.put(DOOR_LIGHT, new DeviceConfig(DEV_BW8001SW, 211,
-            "192.168.10.211", 5000, COMP_RELEAY, 1));
-      mLightConfigMap.put(PORCH_LIGHT, new DeviceConfig(DEV_BW8001SW, 212,
-            "192.168.10.212", 5000, COMP_RELEAY, 1));
 
-      mLightConfigMap.put(DINING_ROOM_LIGHT, new DeviceConfig(DEV_BW8001SW,
-            211, "192.168.10.211", 5000, COMP_RELEAY, 1));
-      
+   private void configDevices() {
+      mLightConfigMap.put(PORCH_LIGHT, new DeviceConfig(DEV_BW800R3, 201,
+            "192.168.1.201", 5000, COMP_RELEAY, 1));
+
+      mLightConfigMap.put(DINING_ROOM_LIGHT, new DeviceConfig(DEV_BW800R3, 201,
+            "192.168.1.201", 5000, COMP_RELEAY, 2));
+
       mLightConfigMap.put(LIVING_ROOM_MAIN_LIGHT, new DeviceConfig(DEV_BW800R3,
-            201, "192.168.10.201", 5000, COMP_RELEAY, 1));
+            201, "192.168.1.201", 5000, COMP_RELEAY, 3));
+
       mLightConfigMap.put(LIVING_ROOM_SURROUND_LIGHT, new DeviceConfig(
-            DEV_BW800R3, 201, "192.168.10.201", 5000, COMP_RELEAY, 2));
-      
-      mLightConfigMap.put(READING_ROOM_LIGHT, new DeviceConfig(DEV_BW800R3,
-            201, "192.168.10.201", 5000, COMP_RELEAY, 3));
-      mLightConfigMap.put(BATHROOM_LIGHT, new DeviceConfig(DEV_BW8001SW, 212,
-            "192.168.10.212", 5000, COMP_RELEAY, 1));
+            DEV_BW8001SW, 210, "192.168.1.210", 5000, COMP_RELEAY, 1));
+
+      mLightConfigMap.put(BATHROOM_LIGHT, new DeviceConfig(DEV_BW8001SW, 211,
+            "192.168.1.211", 5000, COMP_RELEAY, 1));
 
       mLightConfigMap.put(MASTER_BEDROOM_LIGHT, new DeviceConfig(DEV_BW8001SW,
-            211, "192.168.10.211", 5000, COMP_RELEAY, 1));
+            212, "192.168.1.212", 5000, COMP_RELEAY, 1));
+
       mLightConfigMap.put(SENCONDARY_BEDROOM_LIGHT, new DeviceConfig(
-            DEV_BW8001SW, 212, "192.168.10.212", 5000, COMP_RELEAY, 1));
+            DEV_BW8001SW, 213, "192.168.1.213", 5000, COMP_RELEAY, 1));
 
       // theme control
       ThemeItem theme = new ThemeItem();
@@ -387,18 +385,21 @@ public class LightControlActivity extends IotBaseActivity {
       theme = new ThemeItem();
       theme.ico = R.drawable.ico_theater;
       theme.title = R.string.theater;
-      theme.lights.add(LIVING_ROOM_SURROUND_LIGHT);
+      theme.lights.add(LIVING_ROOM_MAIN_LIGHT);
       mThemeList.add(theme);
 
       theme = new ThemeItem();
       theme.ico = R.drawable.ico_bathroom;
       theme.title = R.string.bathroom;
+      theme.lights.add(LIVING_ROOM_SURROUND_LIGHT);
       theme.lights.add(BATHROOM_LIGHT);
       mThemeList.add(theme);
 
       theme = new ThemeItem();
       theme.ico = R.drawable.ico_bedroom;
       theme.title = R.string.bedroom;
+      theme.lights.add(MASTER_BEDROOM_LIGHT);
+      theme.lights.add(SENCONDARY_BEDROOM_LIGHT);
       mThemeList.add(theme);
 
       theme = new ThemeItem();

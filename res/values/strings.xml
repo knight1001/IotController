@@ -37,7 +37,7 @@
     
     <!-- light & sensor control -->
     <string name="theme_list">情景控制</string>
-    <string name="light_list">灯控列表</string>
+    <string name="light_list">设备列表</string>
     <string name="temperature">室温</string>
     <string name="humidity">湿度</string>
     <string name="fan">风扇</string>
@@ -47,20 +47,20 @@
     <string name="all_off">全关</string>
     <string name="on">开</string>
     <string name="off">关</string>
-    <string name="porch">回家</string>
-    <string name="dining_room">用餐</string>
-    <string name="theater">影院</string>
-    <string name="bathroom">洗浴</string>
-    <string name="bedroom">入睡</string>
+    <string name="porch">场景一</string>
+    <string name="dining_room">场景二</string>
+    <string name="theater">场景三</string>
+    <string name="bathroom">场景四</string>
+    <string name="bedroom">场景五</string>
     <string name="custom">自定义</string>
     <string name="door_light">进门灯</string>
-    <string name="porch_light">走廊灯</string>
-    <string name="living_room_main_light">客厅主灯</string>
-    <string name="living_room_surround_light">客厅景观灯</string>
     <string name="reading_room_light">书房灯</string>
-    <string name="master_bedroom_light">主卧灯</string>
-    <string name="secondary_bedroom_light">次卧灯</string>
-    <string name="dining_room_light">餐厅灯</string>
-    <string name="bathroom_light">浴室灯</string>
+    <string name="porch_light">灯一</string>
+    <string name="dining_room_light">灯二</string>
+    <string name="living_room_main_light">灯三</string>
+    <string name="living_room_surround_light">插座一</string>
+    <string name="bathroom_light">插座二</string>
+    <string name="master_bedroom_light">插座三</string>
+    <string name="secondary_bedroom_light">插座四</string>
 
 </resources>

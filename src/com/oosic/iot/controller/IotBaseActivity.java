@@ -19,6 +19,7 @@ public class IotBaseActivity extends Activity {
    public static final int DEV_BW8001SW = 8001;
    public static final int DEV_BW800R3 = 8002;
 
+   public static final int COMP_ALL = 0;
    public static final int COMP_RELEAY = 1;
    public static final int COMP_ADC = 2;
 
@@ -28,6 +29,8 @@ public class IotBaseActivity extends Activity {
    public static final int CMD_GET_ADC = 4;
    public static final int CMD_RELAY_ALL_ON = 5;
    public static final int CMD_RELAY_ALL_OFF = 6;
+   public static final int CMD_IR_STUDY = 7;
+   public static final int CMD_IR_SEND = 8;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -103,6 +106,25 @@ public class IotBaseActivity extends Activity {
          }
          break;
       case DEV_BW800IR:
+         if (command == CMD_IR_STUDY) {
+            data = new byte[7];
+            data[0] = (byte) (config.addr & 0xff);
+            data[1] = (byte) 0x50;
+            data[2] = (byte) 0xfa;
+            data[3] = (byte) 0x05;
+            data[4] = (byte) (config.channel & 0xff);
+            data[5] = (byte) 0x00;
+            data[6] = (byte) (data[3] ^ data[4] ^ data[5]);
+         } else if (command == CMD_IR_SEND) {
+            data = new byte[7];
+            data[0] = (byte) (config.addr & 0xff);
+            data[1] = (byte) 0x50;
+            data[2] = (byte) 0xfa;
+            data[3] = (byte) 0x01;
+            data[4] = (byte) (config.channel & 0xff);
+            data[5] = (byte) 0x00;
+            data[6] = (byte) (data[3] ^ data[4] ^ data[5]);
+         }
          break;
       case DEV_BW800R3:
          if (command == CMD_GET_RELAY_STATUS) {
