@@ -152,7 +152,7 @@ public class LightControlActivity extends IotBaseActivity {
 
    private void init() {
       mIotManager = getIotManager();
-      initDevices();
+      configDevices();
       initViews();
    }
 
@@ -325,6 +325,7 @@ public class LightControlActivity extends IotBaseActivity {
    public void onDestroy() {
       super.onDestroy();
 
+      cleanup();
    }
 
    private void showToast(String msg) {
@@ -336,28 +337,39 @@ public class LightControlActivity extends IotBaseActivity {
             .setPositiveButton(R.string.ok, null).show();
    }
 
-   private void initDevices() {
+   private void cleanup() {
+      for (LightItem light : mLightList) {
+         if (light.socket != null && !light.socket.isClosed()) {
+            light.socket.close();
+         }
+         light.socket = null;
+      }
+      mLightSocketMap.clear();
+   }
+   
+   private void configDevices() {
       mLightConfigMap.put(DOOR_LIGHT, new DeviceConfig(DEV_BW8001SW, 211,
             "192.168.10.211", 5000, COMP_RELEAY, 1));
       mLightConfigMap.put(PORCH_LIGHT, new DeviceConfig(DEV_BW8001SW, 212,
             "192.168.10.212", 5000, COMP_RELEAY, 1));
 
+      mLightConfigMap.put(DINING_ROOM_LIGHT, new DeviceConfig(DEV_BW8001SW,
+            211, "192.168.10.211", 5000, COMP_RELEAY, 1));
+      
       mLightConfigMap.put(LIVING_ROOM_MAIN_LIGHT, new DeviceConfig(DEV_BW800R3,
             201, "192.168.10.201", 5000, COMP_RELEAY, 1));
       mLightConfigMap.put(LIVING_ROOM_SURROUND_LIGHT, new DeviceConfig(
             DEV_BW800R3, 201, "192.168.10.201", 5000, COMP_RELEAY, 2));
+      
       mLightConfigMap.put(READING_ROOM_LIGHT, new DeviceConfig(DEV_BW800R3,
             201, "192.168.10.201", 5000, COMP_RELEAY, 3));
+      mLightConfigMap.put(BATHROOM_LIGHT, new DeviceConfig(DEV_BW8001SW, 212,
+            "192.168.10.212", 5000, COMP_RELEAY, 1));
 
       mLightConfigMap.put(MASTER_BEDROOM_LIGHT, new DeviceConfig(DEV_BW8001SW,
             211, "192.168.10.211", 5000, COMP_RELEAY, 1));
       mLightConfigMap.put(SENCONDARY_BEDROOM_LIGHT, new DeviceConfig(
             DEV_BW8001SW, 212, "192.168.10.212", 5000, COMP_RELEAY, 1));
-
-      mLightConfigMap.put(DINING_ROOM_LIGHT, new DeviceConfig(DEV_BW8001SW,
-            211, "192.168.10.211", 5000, COMP_RELEAY, 1));
-      mLightConfigMap.put(BATHROOM_LIGHT, new DeviceConfig(DEV_BW8001SW, 212,
-            "192.168.10.212", 5000, COMP_RELEAY, 1));
 
       // theme control
       ThemeItem theme = new ThemeItem();
@@ -387,7 +399,6 @@ public class LightControlActivity extends IotBaseActivity {
       theme = new ThemeItem();
       theme.ico = R.drawable.ico_bedroom;
       theme.title = R.string.bedroom;
-      theme.lights.add(MASTER_BEDROOM_LIGHT);
       mThemeList.add(theme);
 
       theme = new ThemeItem();
@@ -397,13 +408,13 @@ public class LightControlActivity extends IotBaseActivity {
 
       // light control
       LightItem light = new LightItem();
-      light.name = DOOR_LIGHT;
-      light.title = R.string.door_light;
+      light.name = PORCH_LIGHT;
+      light.title = R.string.porch_light;
       mLightList.add(light);
 
       light = new LightItem();
-      light.name = PORCH_LIGHT;
-      light.title = R.string.porch_light;
+      light.name = DINING_ROOM_LIGHT;
+      light.title = R.string.dining_room_light;
       mLightList.add(light);
 
       light = new LightItem();
@@ -417,8 +428,8 @@ public class LightControlActivity extends IotBaseActivity {
       mLightList.add(light);
 
       light = new LightItem();
-      light.name = READING_ROOM_LIGHT;
-      light.title = R.string.reading_room_light;
+      light.name = BATHROOM_LIGHT;
+      light.title = R.string.bathroom_light;
       mLightList.add(light);
 
       light = new LightItem();

@@ -45,10 +45,12 @@
                 android:background="@drawable/body_bg" >
 
                 <FrameLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@+id/fan_layout"
-                    android:layout_centerInParent="true" >
+                    android:id="@+id/temp_sensor_layout"
+                    android:layout_width="@dimen/sensor_ico_size"
+                    android:layout_height="@dimen/sensor_ico_size"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp" >
 
                     <ImageView
                         android:layout_width="fill_parent"
@@ -58,16 +60,18 @@
 
                     <TextView
                         android:id="@+id/temp_sensor"
-                        android:layout_width="@dimen/sensor_ico_size"
-                        android:layout_height="@dimen/sensor_ico_size" />
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:gravity="center"
+                        android:textSize="20dp" />
                 </FrameLayout>
 
                 <LinearLayout
-                    android:id="@id/fan_layout"
+                    android:id="@+id/fan_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
+                    android:layout_below="@id/temp_sensor_layout"
                     android:orientation="horizontal" >
 
                     <TextView
@@ -83,7 +87,10 @@
                         android:id="@+id/fan_switcher"
                         android:layout_width="@dimen/fan_ico_width"
                         android:layout_height="@dimen/fan_ico_height"
-                        android:background="@drawable/fan_bg" />
+                        android:background="@drawable/fan_bg"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:textSize="20dp" />
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
@@ -109,9 +116,11 @@
                 android:background="@drawable/body_bg" >
 
                 <FrameLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true" >
+                    android:layout_width="@dimen/sensor_ico_size"
+                    android:layout_height="@dimen/sensor_ico_size"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp" >
 
                     <ImageView
                         android:layout_width="fill_parent"
@@ -121,8 +130,10 @@
 
                     <TextView
                         android:id="@+id/humidity_sensor"
-                        android:layout_width="@dimen/sensor_ico_size"
-                        android:layout_height="@dimen/sensor_ico_size" />
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:gravity="center"
+                        android:textSize="20dp" />
                 </FrameLayout>
             </RelativeLayout>
         </LinearLayout>
@@ -148,10 +159,12 @@
                 android:background="@drawable/body_bg" >
 
                 <FrameLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@+id/light_layout"
-                    android:layout_centerInParent="true" >
+                    android:id="@+id/light_sensor_layout"
+                    android:layout_width="@dimen/sensor_ico_size"
+                    android:layout_height="@dimen/sensor_ico_size"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp" >
 
                     <ImageView
                         android:layout_width="fill_parent"
@@ -161,16 +174,18 @@
 
                     <TextView
                         android:id="@+id/light_sensor"
-                        android:layout_width="@dimen/sensor_ico_size"
-                        android:layout_height="@dimen/sensor_ico_size" />
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:gravity="center"
+                        android:textSize="20dp" />
                 </FrameLayout>
 
                 <LinearLayout
-                    android:id="@id/light_layout"
+                    android:id="@+id/light_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
+                    android:layout_below="@id/light_sensor_layout"
                     android:orientation="horizontal" >
 
                     <TextView
@@ -186,7 +201,10 @@
                         android:id="@+id/light_switcher"
                         android:layout_width="@dimen/fan_ico_width"
                         android:layout_height="@dimen/fan_ico_height"
-                        android:background="@drawable/fan_bg" />
+                        android:background="@drawable/fan_bg"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:textSize="20dp" />
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
@@ -212,9 +230,11 @@
                 android:background="@drawable/body_bg" >
 
                 <FrameLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true" >
+                    android:layout_width="@dimen/sensor_ico_size"
+                    android:layout_height="@dimen/sensor_ico_size"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp" >
 
                     <ImageView
                         android:layout_width="fill_parent"
@@ -224,8 +244,10 @@
 
                     <TextView
                         android:id="@+id/formol_sensor"
-                        android:layout_width="@dimen/sensor_ico_size"
-                        android:layout_height="@dimen/sensor_ico_size" />
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:gravity="center"
+                        android:textSize="20dp" />
                 </FrameLayout>
             </RelativeLayout>
         </LinearLayout>

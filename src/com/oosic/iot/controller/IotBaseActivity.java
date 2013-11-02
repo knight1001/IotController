@@ -173,8 +173,8 @@ public class IotBaseActivity extends Activity {
 
       DeviceItem device;
 
-      public DeviceDataListener(DeviceItem dev) {
-         this.device = dev;
+      public DeviceDataListener(DeviceItem device) {
+         this.device = device;
       }
 
    }

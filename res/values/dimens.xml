@@ -29,7 +29,7 @@
     <dimen name="middle_gap">41dp</dimen>
     <dimen name="body_height">612dp</dimen>
     <dimen name="body_padding">5dp</dimen>
-    <dimen name="sensor_ico_size">418dp</dimen>
+    <dimen name="sensor_ico_size">200dp</dimen>
     <dimen name="fan_ico_width">199dp</dimen>
     <dimen name="fan_ico_height">86dp</dimen>
     <dimen name="light_action_ico_size">58dp</dimen>
