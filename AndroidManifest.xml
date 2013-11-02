@@ -18,9 +18,9 @@
     <application
         android:name="com.oosic.iot.controller.IotApp"
         android:allowBackup="true"
-        android:icon="@drawable/icon"
+        android:icon="@drawable/icon_ir"
         android:theme="@style/Theme.Activity"
-        android:label="@string/app_name" >
+        android:label="@string/app_name_ir" >
         <activity
             android:name="com.oosic.iot.controller.IotControlActivity"
             android:label="@string/app_name"
@@ -30,10 +30,15 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+<!--             <intent-filter> -->
+<!--                 <action android:name="android.intent.action.MAIN" /> -->
+
+<!--                 <category android:name="android.intent.category.LAUNCHER" /> -->
+<!--             </intent-filter> -->
         </activity>
         <activity
             android:name="com.oosic.iot.controller.LightControlActivity"
-            android:label="@string/app_name"
+            android:label="@string/app_name_light"
             android:screenOrientation="landscape" >
 <!--             <intent-filter> -->
 <!--                 <action android:name="android.intent.action.MAIN" /> -->
@@ -43,7 +48,7 @@
         </activity>
         <activity
             android:name="com.oosic.iot.controller.SensorControlActivity"
-            android:label="@string/app_name"
+            android:label="@string/app_name_sensor"
             android:screenOrientation="landscape" >
 <!--             <intent-filter> -->
 <!--                 <action android:name="android.intent.action.MAIN" /> -->
@@ -53,7 +58,7 @@
         </activity>
         <activity
             android:name="com.oosic.iot.controller.IrControlActivity"
-            android:label="@string/app_name"
+            android:label="@string/app_name_ir"
             android:screenOrientation="landscape" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -2,6 +2,9 @@
 <resources>
 
     <string name="app_name">IotController</string>
+    <string name="app_name_light">灯光控制</string>
+    <string name="app_name_sensor">室内湿温</string>
+    <string name="app_name_ir">家电控制</string>
     <string name="device_config">Device Configuration</string>
     <string name="ssid">SSID</string>
     <string name="password">Password</string>

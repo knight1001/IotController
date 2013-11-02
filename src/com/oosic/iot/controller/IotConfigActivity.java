@@ -1,16 +1,15 @@
 package com.oosic.iot.controller;
 
 import java.net.DatagramPacket;
-
 import com.oosic.iot.controller.library.IotConfig;
 import com.oosic.iot.controller.library.IotConfigListner;
 import com.oosic.iot.controller.library.IotDevice;
 import com.oosic.iot.controller.library.IotEvent;
 import com.oosic.iot.controller.library.IotManager;
+import com.oosic.iot.controller.R;
 import com.oosic.iot.controller.utils.NetworkHelper;
 import com.oosic.iot.controller.utils.UIUtils;
 import com.oosic.iot.controller.utils.Utils;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.DhcpInfo;

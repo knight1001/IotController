@@ -5,7 +5,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-
 import com.oosic.iot.controller.library.IotAdapter;
 import com.oosic.iot.controller.library.IotCommand;
 import com.oosic.iot.controller.library.IotCommandResponse;
@@ -15,9 +14,9 @@ import com.oosic.iot.controller.library.IotDevice;
 import com.oosic.iot.controller.library.IotManager;
 import com.oosic.iot.controller.library.IotResult;
 import com.oosic.iot.controller.library.PreferenceManager;
+import com.oosic.iot.controller.R;
 import com.oosic.iot.controller.utils.UIUtils;
 import com.oosic.iot.controller.utils.Utils;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;

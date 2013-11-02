@@ -7,15 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import com.oosic.iot.controller.library.IotAdapter;
 import com.oosic.iot.controller.library.IotManager;
 import com.oosic.iot.controller.library.IotResult;
+import com.oosic.iot.controller.R;
 import com.oosic.iot.controller.utils.UIUtils;
 import com.oosic.iot.controller.utils.Utils;
 import com.oosic.iot.controller.views.LightView;
 import com.oosic.iot.controller.views.ThemeView;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;

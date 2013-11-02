@@ -7,12 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import com.oosic.iot.controller.library.IotManager;
 import com.oosic.iot.controller.library.IotResult;
+import com.oosic.iot.controller.R;
 import com.oosic.iot.controller.utils.UIUtils;
 import com.oosic.iot.controller.utils.Utils;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
