@@ -18,6 +18,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -488,25 +489,47 @@ public class IotManager {
          final IotDataListener listener) {
       new Thread(new Runnable() {
          public void run() {
-            sendUdpData(data, ip, port, socket, handler, listener);
+            sendUdpData(data, ip, port, socket, handler, listener, null);
+         }
+      }).start();
+   }
+
+   public void requestSendingUdpData(final byte[] data, final String ip,
+         final int port, final DatagramSocket socket, final Handler handler,
+         final IotDataListener listener, final HashSet<String> hexResults) {
+      new Thread(new Runnable() {
+         public void run() {
+            sendUdpData(data, ip, port, socket, handler, listener, hexResults);
          }
       }).start();
    }
 
    public void sendUdpData(byte[] data, String ip, int port,
          DatagramSocket socket, Handler handler, IotDataListener listener) {
+      sendUdpData(data, ip, port, socket, handler, listener, null);
+   }
+
+   public void sendUdpData(byte[] data, String ip, int port,
+         DatagramSocket socket, Handler handler, IotDataListener listener,
+         HashSet<String> hexResults) {
       if (socket == null || socket.isClosed() || !socket.isConnected()) {
          socket = genUdpSocket(ip, port);
       }
       DatagramPacket packet = genUdpPacket(data, ip, port);
       if (socket != null && packet != null) {
-         sendUdpPacket(socket, packet, handler, listener);
+         sendUdpPacket(socket, packet, handler, listener, hexResults);
       }
    }
 
    public void sendUdpPacket(final DatagramSocket socket,
          DatagramPacket packet, final Handler handler,
          final IotDataListener listener) {
+      sendUdpPacket(socket, packet, handler, listener, null);
+   }
+
+   public void sendUdpPacket(final DatagramSocket socket,
+         DatagramPacket packet, final Handler handler,
+         final IotDataListener listener, HashSet<String> hexResults) {
       try {
          if (!socket.isClosed() && socket.isConnected()) {
             socket.send(packet);
@@ -525,24 +548,32 @@ public class IotManager {
                });
             }
 
-            byte[] recvBuff = new byte[1024];
-            final DatagramPacket recvPacket = new DatagramPacket(recvBuff,
-                  recvBuff.length);
-            socket.setSoTimeout(10000);
-            socket.receive(recvPacket);
+            int count = 0;
+            while (count++ < 3) {
+               byte[] recvBuff = new byte[1024];
+               final DatagramPacket recvPacket = new DatagramPacket(recvBuff,
+                     recvBuff.length);
+               try {
+                  socket.setSoTimeout(10000);
+                  socket.receive(recvPacket);
+               } catch (Exception e) {
+                  continue;
+               }
 
-            Utils.log(
-                  TAG,
-                  "sendUdpPacket: response="
-                        + IotManager.toHexString(recvPacket.getData(), 0,
-                              recvPacket.getLength()));
-            if (handler != null && listener != null) {
-               handler.post(new Runnable() {
-                  public void run() {
-                     listener.onDataReceived(new IotResult(IotEvent.SUCCESS),
-                           recvPacket);
-                  }
-               });
+               String hexString = IotManager.toHexString(recvPacket.getData(),
+                     0, recvPacket.getLength());
+               Utils.log(TAG, "sendUdpPacket: response=" + hexString);
+               if (handler != null && listener != null) {
+                  handler.post(new Runnable() {
+                     public void run() {
+                        listener.onDataReceived(
+                              new IotResult(IotEvent.SUCCESS), recvPacket);
+                     }
+                  });
+               }
+               if (hexResults == null || hexResults.contains(hexString)) {
+                  break;
+               }
             }
          }
       } catch (UnknownHostException e) {

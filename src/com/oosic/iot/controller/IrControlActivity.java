@@ -6,12 +6,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import com.oosic.iot.controller.library.IotManager;
 import com.oosic.iot.controller.library.IotResult;
 import com.oosic.iot.controller.library.PreferenceManager;
 import com.oosic.iot.controller.R;
 import com.oosic.iot.controller.utils.UIUtils;
 import com.oosic.iot.controller.utils.Utils;
+
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -32,6 +37,7 @@ public class IrControlActivity extends IotBaseActivity implements
    private Map<String, Integer> mButtonAddrMap = new HashMap<String, Integer>();
    private Map<String, Integer> mButtonResouceMap = new HashMap<String, Integer>();
    private Map<String, Integer> mAvailableButtonMap = new HashMap<String, Integer>();
+   private ProgressDialog mProgressDialog;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -155,6 +161,23 @@ public class IrControlActivity extends IotBaseActivity implements
    private void showMessageDialog(String msg) {
       UIUtils.getAlertDialogBuilder(this).setMessage(msg)
             .setPositiveButton(R.string.ok, null).show();
+   }
+   
+   private void showProgressDialog(View v) {
+      if (mProgressDialog == null) {
+         mProgressDialog = new ProgressDialog(this);
+         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+         mProgressDialog.setMessage(getString(R.string.studying));
+         mProgressDialog.setMax(100);
+         mProgressDialog.setCancelable(false);
+      }
+      mProgressDialog.show();
+   }
+
+   private void hideProgressDialog() {
+      if (mProgressDialog != null) {
+         mProgressDialog.dismiss();
+      }
    }
 
    private void sendCommand(DeviceItem device, byte[] data) {
