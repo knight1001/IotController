@@ -4,6 +4,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -15,8 +16,6 @@ import com.oosic.iot.controller.utils.UIUtils;
 import com.oosic.iot.controller.utils.Utils;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnDismissListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -36,8 +35,9 @@ public class IrControlActivity extends IotBaseActivity implements
    private Map<String, Button> mButtonMap = new HashMap<String, Button>();
    private Map<String, Integer> mButtonAddrMap = new HashMap<String, Integer>();
    private Map<String, Integer> mButtonResouceMap = new HashMap<String, Integer>();
-   private Map<String, Integer> mAvailableButtonMap = new HashMap<String, Integer>();
+   private HashSet<String> mAvailableButtons = new HashSet<String>();
    private ProgressDialog mProgressDialog;
+   private Map<String, Action> mStudyActionMap = new HashMap<String, Action>();
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +56,15 @@ public class IrControlActivity extends IotBaseActivity implements
    private void init() {
       mIotManager = getIotManager();
       initViews();
+      initActions();
+   }
+
+   private void initActions() {
+      mStudyActionMap.put(STUDY_SUCCESS, new StudySuccessAction());
+      mStudyActionMap.put(STUDY_FAILURE, new StudyFailureAction());
+      mStudyActionMap.put(STUDY_TIMEOUT, new StudyTimeoutAction());
+      mStudyActionMap.put(STUDY_SEND_SUCCESS, new StudySendSuccessAction());
+      mStudyActionMap.put(STUDY_SEND_FAILURE, new StudySendFailureAction());
    }
 
    private void initViews() {
@@ -78,19 +87,20 @@ public class IrControlActivity extends IotBaseActivity implements
          Button button = (Button) findViewById(item.id);
          button.setTag(device);
          button.setOnClickListener(this);
+         button.setOnLongClickListener(this);
          mButtonMap.put(item.name, button);
          mButtonAddrMap.put(item.name, buttonAddr);
          mButtonResouceMap.put(item.name, item.id);
 
          int addr = prefsManager.getButtonAddr(item.name);
          if (addr > 0) {
-            mAvailableButtonMap.put(item.name, addr);
+            mAvailableButtons.add(item.name);
          }
       }
 
       Button button = mButtonMap.get(STUDY);
       button.setSelected(false);
-      button.setTextColor(0xffffff);
+      button.setTextColor(0xffffffff);
    }
 
    private void relayoutViews() {
@@ -101,13 +111,15 @@ public class IrControlActivity extends IotBaseActivity implements
    public void onClick(View v) {
       Button button = (Button) v;
       DeviceItem device = (DeviceItem) v.getTag();
+      Utils.logi(TAG, "onClick: " + device.name);
       if (mButtonResouceMap.get(device.name) != R.id.btn_study) {
          if (!mButtonMap.get(STUDY).isSelected()) {
             button.setSelected(false);
             button.setTextColor(0xffffffff);
-            if (mAvailableButtonMap.containsKey(device.name)) {
+            if (mAvailableButtons.contains(device.name)) {
                sendCommand(device,
-                     getCommandByDevice(device.config, CMD_IR_SEND));
+                     getCommandByDevice(device.config, CMD_IR_SEND),
+                     HEX_RESULTS);
             }
          }
       }
@@ -117,24 +129,46 @@ public class IrControlActivity extends IotBaseActivity implements
    public boolean onLongClick(View v) {
       Button button = (Button) v;
       DeviceItem device = (DeviceItem) v.getTag();
+      Utils.logi(TAG, "onLongClick: " + device.name);
       if (mButtonResouceMap.get(device.name) == R.id.btn_study) {
-         button.setSelected(!button.isSelected());
-         button.setTextColor(button.isSelected() ? 0xff00ff : 0xffffff);
-         if (mSelectedButton != null) {
-            mSelectedButton.setSelected(false);
-            mSelectedButton = null;
+         if (mSelectedButton == null) {
+            button.setSelected(!button.isSelected());
+            button.setTextColor(button.isSelected() ? 0xffff0000 : 0xffffffff);
+            showToast(getResources().getString(
+                  button.isSelected() ? R.string.enter_study_mode
+                        : R.string.exit_study_mode));
          }
       } else {
-         if (mButtonMap.get(STUDY).isSelected()) {
-            button.setSelected(!v.isSelected());
-            if (!button.isSelected()) {
+         if (mButtonMap.get(STUDY).isSelected()
+               && (mSelectedButton == null || mSelectedButton == button)) {
+            button.setSelected(!button.isSelected());
+            button.setTextColor(button.isSelected() ? 0xffff0000 : 0xffffffff);
+            if (button.isSelected()) {
                mSelectedButton = button;
                sendCommand(device,
-                     getCommandByDevice(device.config, CMD_IR_STUDY));
+                     getCommandByDevice(device.config, CMD_IR_STUDY),
+                     HEX_RESULTS);
+            } else {
+               mSelectedButton = null;
             }
          }
       }
       return true;
+   }
+
+   private boolean exitStudyMode() {
+      Button studyBtn = mButtonMap.get(STUDY);
+      if (studyBtn.isSelected()) {
+         if (mSelectedButton != null) {
+            mSelectedButton.setSelected(false);
+            mSelectedButton.setTextColor(0xffffffff);
+         }
+         studyBtn.setSelected(false);
+         studyBtn.setTextColor(0xffffffff);
+         showToast(getResources().getString(R.string.exit_study_mode));
+         return true;
+      }
+      return false;
    }
 
    @Override
@@ -144,7 +178,9 @@ public class IrControlActivity extends IotBaseActivity implements
 
    @Override
    public void onBackPressed() {
-      super.onBackPressed();
+      if (!exitStudyMode()) {
+         super.onBackPressed();
+      }
    }
 
    @Override
@@ -162,8 +198,8 @@ public class IrControlActivity extends IotBaseActivity implements
       UIUtils.getAlertDialogBuilder(this).setMessage(msg)
             .setPositiveButton(R.string.ok, null).show();
    }
-   
-   private void showProgressDialog(View v) {
+
+   private void showProgressDialog() {
       if (mProgressDialog == null) {
          mProgressDialog = new ProgressDialog(this);
          mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
@@ -180,10 +216,12 @@ public class IrControlActivity extends IotBaseActivity implements
       }
    }
 
-   private void sendCommand(DeviceItem device, byte[] data) {
+   private void sendCommand(DeviceItem device, byte[] data,
+         HashSet<String> hexResults) {
       device.socket = mDevice.socket;
       mIotManager.requestSendingUdpData(data, device.config.ip,
-            device.config.port, device.socket, mHandler, device.listener);
+            device.config.port, device.socket, mHandler, device.listener,
+            hexResults);
    }
 
    private void cleanup() {
@@ -196,16 +234,69 @@ public class IrControlActivity extends IotBaseActivity implements
    private void analyzeResult(ControllerDataListener listener,
          DatagramPacket packet) {
       byte[] data = packet.getData();
-      Utils.log(
-            TAG,
-            "analyzeResult: "
-                  + IotManager.toHexString(data, 0, packet.getLength()));
+      String resultStr = IotManager.toHexString(data, 0, packet.getLength());
+      Utils.log(TAG, "analyzeResult: " + resultStr);
       DeviceItem device = listener.device;
       switch (device.config.type) {
       case DEV_BW800IR:
-         if (packet.getLength() == 6) {
+         if (HEX_RESULTS.contains(resultStr)) {
+            mStudyActionMap.get(resultStr).action();
+         } else if (STUDY_START.equals(resultStr)) {
+            showProgressDialog();
          }
          break;
+      }
+   }
+
+   class Action {
+      void action() {
+         if (mSelectedButton != null) {
+            mSelectedButton.setSelected(false);
+            mSelectedButton.setTextColor(0xffffffff);
+            mSelectedButton = null;
+         }
+      }
+   }
+
+   class StudySuccessAction extends Action {
+      public void action() {
+         showToast(getResources().getString(R.string.study_success));
+         hideProgressDialog();
+         if (mSelectedButton != null) {
+            DeviceItem device = (DeviceItem) mSelectedButton.getTag();
+            getPrefsManager().setButtonAddr(device.name,
+                  mButtonAddrMap.get(device.name));
+            mAvailableButtons.add(device.name);
+         }
+         super.action();
+      }
+   }
+
+   class StudyFailureAction extends Action {
+      public void action() {
+         showToast(getResources().getString(R.string.study_failure));
+         hideProgressDialog();
+         super.action();
+      }
+   }
+
+   class StudyTimeoutAction extends Action {
+      public void action() {
+         showToast(getResources().getString(R.string.study_timeout));
+         hideProgressDialog();
+         super.action();
+      }
+   }
+
+   class StudySendSuccessAction extends Action {
+      public void action() {
+         showToast(getResources().getString(R.string.study_send_success));
+      }
+   }
+
+   class StudySendFailureAction extends Action {
+      public void action() {
+         showToast(getResources().getString(R.string.study_send_failure));
       }
    }
 
@@ -218,9 +309,7 @@ public class IrControlActivity extends IotBaseActivity implements
       @Override
       public void onDataSent(IotResult result, Object obj) {
          if (obj != null && obj instanceof DatagramSocket) {
-            synchronized (mDevice.socket) {
-               mDevice.socket = (DatagramSocket) obj;
-            }
+            mDevice.socket = (DatagramSocket) obj;
          }
       }
 
@@ -231,6 +320,23 @@ public class IrControlActivity extends IotBaseActivity implements
          }
       }
 
+   }
+
+   private static final HashSet<String> HEX_RESULTS = new HashSet<String>();
+   private static final String STUDY_START = "50fb05010004";
+   private static final String STUDY_SUCCESS = "50fc01000001";
+   private static final String STUDY_FAILURE = "50fc02000002";
+   private static final String STUDY_TIMEOUT = "50fc05000005";
+   private static final String STUDY_SEND_START = "50fb01010000";
+   private static final String STUDY_SEND_SUCCESS = "50fc03000003";
+   private static final String STUDY_SEND_FAILURE = "50fc04000004";
+
+   static {
+      HEX_RESULTS.add(STUDY_SUCCESS);
+      HEX_RESULTS.add(STUDY_FAILURE);
+      HEX_RESULTS.add(STUDY_TIMEOUT);
+      HEX_RESULTS.add(STUDY_SEND_SUCCESS);
+      HEX_RESULTS.add(STUDY_SEND_FAILURE);
    }
 
    private static final String POWER = "power";

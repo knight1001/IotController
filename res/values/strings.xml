@@ -65,9 +65,13 @@
     <string name="bathroom_light">插座二</string>
     <string name="master_bedroom_light">插座三</string>
     <string name="secondary_bedroom_light">插座四</string>
+    <string name="enter_study_mode">进入学习模式</string>
+    <string name="exit_study_mode">退出学习模式</string>
     <string name="studying">正在学习指令...</string>
     <string name="study_success">学习成功！</string>
-    <string name="study_failed">学习失败！</string>
+    <string name="study_failure">学习失败！</string>
     <string name="study_timeout">学习超时！</string>
+    <string name="study_send_success">发送指令成功！</string>
+    <string name="study_send_failure">发送指令失败！</string>
 
 </resources>
