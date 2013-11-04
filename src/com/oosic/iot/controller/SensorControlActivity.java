@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 public class SensorControlActivity extends IotBaseActivity {
 
-   private static final String TAG = "IotControlActivity";
+   private static final String TAG = "SensorControlActivity";
 
    private static final String TEMPERATURE_SENSOR = "temperature";
    private static final String HUMIDITY_SENSOR = "humidity";

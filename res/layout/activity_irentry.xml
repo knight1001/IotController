@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg" >
+
+    <ImageView
+        android:id="@+id/entry_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/logo_margin_h"
+        android:layout_marginTop="@dimen/logo_margin_v"
+        android:focusable="false"
+        android:background="@drawable/logo" />
+
+    <LinearLayout
+        android:id="@+id/light_body_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/entry_logo"
+        android:layout_marginLeft="@dimen/logo_margin_h"
+        android:layout_marginRight="@dimen/logo_margin_h"
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:id="@+id/left_ico"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:focusable="false"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ico_air_normal" />
+
+        <ImageView
+            android:id="@+id/middle_ico"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="2"
+            android:focusable="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ico_tv_highlight" />
+
+        <ImageView
+            android:id="@+id/right_ico"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:focusable="false"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ico_sharebox_normal" />
+    </LinearLayout>
+
+</RelativeLayout>

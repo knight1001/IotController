@@ -23,10 +23,10 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.Button;
 
-public class IrControlActivity extends IotBaseActivity implements
+public class TvControlActivity extends IotBaseActivity implements
       OnClickListener, OnLongClickListener {
 
-   private static final String TAG = "IotControlActivity";
+   private static final String TAG = "IrControlActivity";
 
    private Button mSelectedButton;
    private Handler mHandler = new Handler();

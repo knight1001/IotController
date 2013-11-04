@@ -35,7 +35,7 @@ import android.widget.RelativeLayout.LayoutParams;
 
 public class LightControlActivity extends IotBaseActivity {
 
-   private static final String TAG = "IotControlActivity";
+   private static final String TAG = "LightControlActivity";
 
    private static final String DOOR_LIGHT = "door_light";
    private static final String PORCH_LIGHT = "porch_light";

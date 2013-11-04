@@ -57,7 +57,7 @@
 <!--             </intent-filter> -->
         </activity>
         <activity
-            android:name="com.oosic.iot.controller.IrControlActivity"
+            android:name="com.oosic.iot.controller.IrEntryActivity"
             android:label="@string/app_name_ir"
             android:screenOrientation="landscape" >
             <intent-filter>
@@ -66,6 +66,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.oosic.iot.controller.TvControlActivity"
+            android:label="@string/app_name_ir"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name="com.oosic.iot.controller.AirControlActivity"
+            android:label="@string/app_name_ir"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name="com.oosic.iot.controller.ShareboxControlActivity"
+            android:label="@string/app_name_ir"
+            android:screenOrientation="landscape" />
     </application>
 
 </manifest>
