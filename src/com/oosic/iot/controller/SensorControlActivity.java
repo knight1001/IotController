@@ -74,7 +74,7 @@ public class SensorControlActivity extends IotBaseActivity {
       // temperature sensor
       DeviceItem device = new DeviceItem();
       device.name = TEMPERATURE_SENSOR;
-      device.config = new DeviceConfig(DEV_BW8001SW, 220, "192.168.1.220",
+      device.config = new DeviceConfig(DEV_BW8001SW, 210, "192.168.1.210",
             5000, COMP_ADC, 1);
       device.listener = new SensorDataListener(device);
       mTempView.setTag(device);
@@ -83,7 +83,7 @@ public class SensorControlActivity extends IotBaseActivity {
       // fan switcher
       device = new DeviceItem();
       device.name = FAN_SWITCHER;
-      device.config = new DeviceConfig(DEV_BW8001SW, 220, "192.168.1.220",
+      device.config = new DeviceConfig(DEV_BW8001SW, 210, "192.168.1.210",
             5000, COMP_RELEAY, 1);
       device.listener = new SensorDataListener(device);
       mFanSwitcherView.setTag(device);
@@ -92,7 +92,7 @@ public class SensorControlActivity extends IotBaseActivity {
       // humidity sensor
       device = new DeviceItem();
       device.name = HUMIDITY_SENSOR;
-      device.config = new DeviceConfig(DEV_BW8001SW, 221, "192.168.1.221",
+      device.config = new DeviceConfig(DEV_BW8001SW, 211, "192.168.1.211",
             5000, COMP_ADC, 1);
       device.listener = new SensorDataListener(device);
       mHumidityView.setTag(device);
@@ -101,7 +101,7 @@ public class SensorControlActivity extends IotBaseActivity {
       // light sensor
       device = new DeviceItem();
       device.name = LIGHT_SENSOR;
-      device.config = new DeviceConfig(DEV_BW8001SW, 222, "192.168.1.222",
+      device.config = new DeviceConfig(DEV_BW8001SW, 212, "192.168.1.212",
             5000, COMP_ADC, 1);
       device.listener = new SensorDataListener(device);
       mLightView.setTag(device);
@@ -110,7 +110,7 @@ public class SensorControlActivity extends IotBaseActivity {
       // light switcher
       device = new DeviceItem();
       device.name = LIGHT_SWITCHER;
-      device.config = new DeviceConfig(DEV_BW8001SW, 222, "192.168.1.222",
+      device.config = new DeviceConfig(DEV_BW8001SW, 212, "192.168.1.212",
             5000, COMP_RELEAY, 1);
       device.listener = new SensorDataListener(device);
       mLightSwitcherView.setTag(device);
@@ -118,7 +118,7 @@ public class SensorControlActivity extends IotBaseActivity {
 
       device = new DeviceItem();
       device.name = FORMOL_SENSOR;
-      device.config = new DeviceConfig(DEV_BW8001SW, 223, "192.168.1.223",
+      device.config = new DeviceConfig(DEV_BW8001SW, 213, "192.168.1.213",
             5000, COMP_ADC, 1);
       device.listener = new SensorDataListener(device);
       mFormolView.setTag(device);
