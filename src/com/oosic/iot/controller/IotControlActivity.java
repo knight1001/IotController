@@ -153,36 +153,16 @@ public class IotControlActivity extends IotBaseActivity {
 
       mSearchBtn.setOnClickListener(new View.OnClickListener() {
          public void onClick(View v) {
-            byte[] cmd = new byte[6];
-            cmd[0] = (byte) 0xc9;
-            cmd[1] = 0x50;
-            cmd[2] = (byte) 0xae;
-            cmd[3] = 0x01;
-            cmd[4] = 0x01;
-            cmd[5] = 0x01;
-//            cmd[6] = 0x01;
-//               mIotManager.requestSendingLocalCommand(cmd);
-            mIotManager.requestSendingTcpCommand(cmd);
-//            mIotManager.startListeningLocalResponse();
-//            mIotManager.requestSendingBroadcast(IotCommand.SCH.getBytes());
-//            showToast(getString(R.string.find_device));
+            mIotManager.startListeningLocalResponse();
+            mIotManager.requestSendingBroadcast(IotCommand.SCH.getBytes());
+            showToast(getString(R.string.find_device));
          }
       });
 
       mConfigBtn.setOnClickListener(new View.OnClickListener() {
          public void onClick(View v) {
-            byte[] cmd = new byte[6];
-            cmd[0] = (byte) 0xc9;
-            cmd[1] = 0x50;
-            cmd[2] = (byte) 0xae;
-            cmd[3] = 0x01;
-            cmd[4] = 0x01;
-            cmd[5] = 0x00;
-//            cmd[6] = 0x01;
-//               mIotManager.requestSendingLocalCommand(cmd);
-            mIotManager.requestSendingTcpCommand(cmd);
-//            startActivity(new Intent(IotControlActivity.this,
-//                  IotConfigActivity.class));
+            startActivity(new Intent(IotControlActivity.this,
+                  IotConfigActivity.class));
          }
       });
 
