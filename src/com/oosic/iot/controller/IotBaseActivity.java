@@ -18,6 +18,9 @@ public class IotBaseActivity extends Activity {
    public static final int DEV_BW800IR = 8000;
    public static final int DEV_BW8001SW = 8001;
    public static final int DEV_BW800R3 = 8002;
+   public static final int DEV_BW800LT = 8003;
+   public static final int DEV_BW800PW = 8004;
+   public static final int DEV_BW800CU = 8005;
 
    public static final int COMP_ALL = 0;
    public static final int COMP_RELEAY = 1;

@@ -29,7 +29,7 @@ public class IrEntryActivity extends IotBaseActivity implements OnClickListener 
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      setContentView(R.layout.activity_irentry);
+      setContentView(R.layout.activity_ir_entry);
 
       findViews();
       init();

@@ -40,7 +40,7 @@ public class SensorControlActivity extends IotBaseActivity {
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      setContentView(R.layout.activity_sensorcontrol);
+      setContentView(R.layout.activity_sensor_control);
 
       findViews();
       init();

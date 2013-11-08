@@ -9,7 +9,7 @@ public class AirControlActivity extends IotBaseActivity {
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      setContentView(R.layout.activity_aircontrol);
+      setContentView(R.layout.activity_air_control);
    }
 
 }

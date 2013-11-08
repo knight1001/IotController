@@ -43,7 +43,7 @@ public class TvControlActivity extends IotBaseActivity implements
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      setContentView(R.layout.activity_tvcontrol);
+      setContentView(R.layout.activity_tv_control);
 
       init();
       mHandler.post(new Runnable() {

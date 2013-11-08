@@ -5,6 +5,9 @@
     <string name="app_name_light">灯光控制</string>
     <string name="app_name_sensor">室内湿温</string>
     <string name="app_name_ir">家电控制</string>
+    <string name="app_name_curtain">窗帘控制</string>
+    <string name="app_name_dimmer">调光控制</string>
+    <string name="app_name_power">能耗统计</string>
     <string name="device_config">Device Configuration</string>
     <string name="ssid">SSID</string>
     <string name="password">Password</string>
@@ -73,5 +76,18 @@
     <string name="study_timeout">学习超时！</string>
     <string name="study_send_success">发送指令成功！</string>
     <string name="study_send_failure">发送指令失败！</string>
+    <string name="curtain_open_duration">开窗帘时间</string>
+    <string name="curtain_close_duration">关窗帘时间</string>
+    <string name="curtain_duration_prompt">0~65535秒</string>
+    <string name="duration_too_large">时间范围为0~65535秒！</string>
+    <string name="illegal_character">非法字符！</string>
+    <string name="setup">设置</string>
+    <string name="setup_x_success">设置%s成功！</string>
+    <string name="stop_curtain_now">急停</string>
+    <string name="opening_curtain">正在开窗帘...</string>
+    <string name="closing_curtain">正在关窗帘...</string>
+    <string name="stopping_curtain">正在急停窗帘...</string>
+    <string name="current_power_value">当前电度值：%s</string>
+    <string name="dimmer_progress">亮度等级</string>
 
 </resources>

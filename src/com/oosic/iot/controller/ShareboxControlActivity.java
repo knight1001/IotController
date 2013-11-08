@@ -9,7 +9,7 @@ public class ShareboxControlActivity extends IotBaseActivity {
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      setContentView(R.layout.activity_shareboxcontrol);
+      setContentView(R.layout.activity_sharebox_control);
    }
 
 }

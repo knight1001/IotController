@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bg" >
+
+    <ImageView
+        android:id="@+id/curtain_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/logo_margin_h"
+        android:layout_marginTop="@dimen/logo_margin_v"
+        android:background="@drawable/logo"
+        android:focusable="false" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/curtain_logo"
+        android:layout_marginLeft="@dimen/logo_margin_h"
+        android:layout_marginRight="@dimen/logo_margin_h"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name_curtain"
+            android:textColor="@android:color/white"
+            android:textSize="24dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="@string/curtain_open_duration"
+                android:textColor="@android:color/white"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/curtain_open_duration"
+                android:layout_width="@dimen/fan_ico_width"
+                android:layout_height="@dimen/fan_ico_height"
+                android:focusable="true"
+                android:gravity="center"
+                android:hint="@string/curtain_duration_prompt"
+                android:inputType="number"
+                android:text="0"
+                android:textSize="20dp" />
+
+            <Button
+                android:id="@+id/open_duration_setup_btn"
+                android:layout_width="@dimen/fan_ico_width"
+                android:layout_height="@dimen/fan_ico_height"
+                android:background="@drawable/fan_bg"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/setup"
+                android:textSize="20dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="@string/curtain_close_duration"
+                android:textColor="@android:color/white"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/curtain_close_duration"
+                android:layout_width="@dimen/fan_ico_width"
+                android:layout_height="@dimen/fan_ico_height"
+                android:focusable="true"
+                android:gravity="center"
+                android:hint="@string/curtain_duration_prompt"
+                android:inputType="number"
+                android:text="0"
+                android:textSize="20dp" />
+
+            <Button
+                android:id="@+id/close_duration_setup_btn"
+                android:layout_width="@dimen/fan_ico_width"
+                android:layout_height="@dimen/fan_ico_height"
+                android:background="@drawable/fan_bg"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/setup"
+                android:textSize="20dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/open_curtain_btn"
+                android:layout_width="@dimen/fan_ico_width"
+                android:layout_height="@dimen/fan_ico_height"
+                android:background="@drawable/fan_bg"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/on"
+                android:textColor="@android:color/white"
+                android:textSize="20dp" />
+
+            <Button
+                android:id="@+id/stop_curtain_btn"
+                android:layout_width="@dimen/fan_ico_width"
+                android:layout_height="@dimen/fan_ico_height"
+                android:background="@drawable/fan_bg"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/stop_curtain_now"
+                android:textColor="@android:color/white"
+                android:textSize="20dp" />
+
+            <Button
+                android:id="@+id/close_curtain_btn"
+                android:layout_width="@dimen/fan_ico_width"
+                android:layout_height="@dimen/fan_ico_height"
+                android:background="@drawable/fan_bg"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/off"
+                android:textColor="@android:color/white"
+                android:textSize="20dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/curtain_progress_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="invisible" >
+
+            <ProgressBar
+                style="@android:style/Widget.ProgressBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/curtain_progress_prompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="left"
+                android:textColor="@android:color/white"
+                android:textSize="20dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

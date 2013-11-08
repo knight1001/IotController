@@ -66,7 +66,7 @@ public class LightControlActivity extends IotBaseActivity {
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      setContentView(R.layout.activity_lightcontrol);
+      setContentView(R.layout.activity_light_control);
 
       findViews();
       init();
