@@ -64,7 +64,7 @@ public class DimmerControlActivity extends IotBaseActivity {
 
    private void initViews() {
       DimmerItem device = new DimmerItem();
-      device.config = new DeviceConfig(DEV_BW800LT, 202, "192.168.1.202", 5000,
+      device.config = new DeviceConfig(DEV_BW800LT, 221, "192.168.1.221", 5000,
             COMP_ALL, 1);
       device.command = CMD_DIMMER_GET_CURRENT;
       device.listener = new DimmerDataListener(device);

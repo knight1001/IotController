@@ -82,11 +82,11 @@
             android:name="com.oosic.iot.controller.PowerStatusActivity"
             android:label="@string/app_name_power"
             android:screenOrientation="landscape" >
-<!--             <intent-filter> -->
-<!--                 <action android:name="android.intent.action.MAIN" /> -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-<!--                 <category android:name="android.intent.category.LAUNCHER" /> -->
-<!--             </intent-filter> -->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.oosic.iot.controller.CurtainControlActivity"
@@ -102,11 +102,11 @@
             android:name="com.oosic.iot.controller.DimmerControlActivity"
             android:label="@string/app_name_dimmer"
             android:screenOrientation="landscape" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+<!--             <intent-filter> -->
+<!--                 <action android:name="android.intent.action.MAIN" /> -->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                 <category android:name="android.intent.category.LAUNCHER" /> -->
+<!--             </intent-filter> -->
         </activity>
     </application>
 

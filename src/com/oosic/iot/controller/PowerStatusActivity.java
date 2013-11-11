@@ -55,7 +55,7 @@ public class PowerStatusActivity extends IotBaseActivity {
 
    private void initViews() {
       DeviceItem device = new DeviceItem();
-      device.config = new DeviceConfig(DEV_BW800PW, 220, "192.168.1.220", 5000,
+      device.config = new DeviceConfig(DEV_BW800PW, 214, "192.168.1.214", 5000,
             COMP_ALL, 1);
       device.listener = new PowerDataListener(device);
       mDevice = device;

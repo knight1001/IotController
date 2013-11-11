@@ -74,7 +74,7 @@ public class CurtainControlActivity extends IotBaseActivity {
 
    private void initViews() {
       CurtainItem device = new CurtainItem();
-      device.config = new DeviceConfig(DEV_BW800CU, 203, "192.168.1.203", 5000,
+      device.config = new DeviceConfig(DEV_BW800CU, 220, "192.168.1.220", 5000,
             COMP_ALL, 1);
       device.command = CMD_GET_DURATION;
       device.listener = new CurtainDataListener(device);
