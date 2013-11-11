@@ -22,7 +22,7 @@ public class PowerStatusActivity extends IotBaseActivity {
    private static final String TAG = "PowerStatusActivity";
 
    private static final int CMD_GET_POWER = 1;
-   private static final int DURATION_GET_POWER = 10000; // ms
+   private static final int DURATION_GET_POWER = 60000; // ms
 
    private TextView mPowerView;
    private Button mReadPowerBtn;
@@ -75,7 +75,7 @@ public class PowerStatusActivity extends IotBaseActivity {
    }
 
    private void readPower() {
-      sendCommand(mDevice, getCommand(CMD_GET_POWER));
+      sendCommand(mDevice, getCommand(mDevice, CMD_GET_POWER));
    }
 
    private void requestReadPower(long delayMillis) {
@@ -109,9 +109,9 @@ public class PowerStatusActivity extends IotBaseActivity {
             .setPositiveButton(R.string.ok, null).show();
    }
 
-   private byte[] getCommand(int command) {
+   private byte[] getCommand(DeviceItem device, int command) {
       byte[] data = new byte[7];
-      data[0] = (byte) (mDevice.config.addr & 0xff);
+      data[0] = (byte) (device.config.addr & 0xff);
       data[1] = (byte) 0x50;
       data[2] = (byte) 0xee;
       switch (command) {
@@ -141,9 +141,9 @@ public class PowerStatusActivity extends IotBaseActivity {
    private void analyzeResult(PowerDataListener listener, DatagramPacket packet) {
       byte[] data = packet.getData();
       String resultStr = IotManager.toHexString(data, 0, packet.getLength());
-      String str = resultStr.substring(0, 6);
       Utils.log(TAG, "analyzeResult: " + resultStr);
       DeviceItem device = listener.device;
+      String str = resultStr.length() <= 6 ? resultStr: resultStr.substring(0, 6);
       if (packet.getLength() == 8 && "50eb02".equals(str)) {
          long value = ((data[6] << 24) & 0xff000000)
                | ((data[5] << 16) & 0xff0000) | ((data[4] << 8) & 0xff00)

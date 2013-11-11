@@ -69,12 +69,12 @@ public class CurtainControlActivity extends IotBaseActivity {
       mIotManager = getIotManager();
       initViews();
 
-      sendCommand(mDevice, getCommand(CMD_GET_DURATION, 0));
+      sendCommand(mDevice, getCommand(mDevice, CMD_GET_DURATION, 0));
    }
 
    private void initViews() {
       CurtainItem device = new CurtainItem();
-      device.config = new DeviceConfig(DEV_BW800IR, 203, "192.168.1.203", 5000,
+      device.config = new DeviceConfig(DEV_BW800CU, 203, "192.168.1.203", 5000,
             COMP_ALL, 1);
       device.command = CMD_GET_DURATION;
       device.listener = new CurtainDataListener(device);
@@ -94,7 +94,7 @@ public class CurtainControlActivity extends IotBaseActivity {
 	               showToast(getString(R.string.duration_too_large));
 	               return;
                }
-               sendCommand(item, getCommand(item.command, (int) duration));
+               sendCommand(item, getCommand(item, item.command, (int) duration));
             } catch (NumberFormatException e) {
                showToast(getString(R.string.illegal_character));
             }
@@ -114,7 +114,7 @@ public class CurtainControlActivity extends IotBaseActivity {
 	               showToast(getString(R.string.duration_too_large));
 	               return;
                }
-               sendCommand(item, getCommand(item.command, (int) duration));
+               sendCommand(item, getCommand(item, item.command, (int) duration));
             } catch (NumberFormatException e) {
                showToast(getString(R.string.illegal_character));
             }
@@ -128,7 +128,7 @@ public class CurtainControlActivity extends IotBaseActivity {
          public void onClick(View v) {
             CurtainItem item = (CurtainItem) v.getTag();
             showProgressDialog(getString(R.string.opening_curtain));
-            sendCommand(item, getCommand(item.command, 0));
+            sendCommand(item, getCommand(item, item.command, 0));
          }
       });
       item = new CurtainItem(device);
@@ -139,7 +139,7 @@ public class CurtainControlActivity extends IotBaseActivity {
          public void onClick(View v) {
             CurtainItem item = (CurtainItem) v.getTag();
             showProgressDialog(getString(R.string.closing_curtain));
-            sendCommand(item, getCommand(item.command, 0));
+            sendCommand(item, getCommand(item, item.command, 0));
          }
       });
       item = new CurtainItem(device);
@@ -150,7 +150,7 @@ public class CurtainControlActivity extends IotBaseActivity {
          public void onClick(View v) {
             CurtainItem item = (CurtainItem) v.getTag();
             showProgressDialog(getString(R.string.stopping_curtain));
-            sendCommand(item, getCommand(item.command, 0));
+            sendCommand(item, getCommand(item, item.command, 0));
          }
       });
       
@@ -188,9 +188,9 @@ public class CurtainControlActivity extends IotBaseActivity {
 //      mWaitingLayout.setVisibility(View.INVISIBLE);
    }
 
-   private byte[] getCommand(int command, int value) {
+   private byte[] getCommand(DeviceItem device, int command, int value) {
       byte[] data = new byte[7];
-      data[0] = (byte) (mDevice.config.addr & 0xff);
+      data[0] = (byte) (device.config.addr & 0xff);
       data[1] = (byte) 0x50;
       data[2] = (byte) 0xde;
       switch (command) {

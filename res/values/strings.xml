@@ -87,8 +87,10 @@
     <string name="opening_curtain">正在开窗帘...</string>
     <string name="closing_curtain">正在关窗帘...</string>
     <string name="stopping_curtain">正在急停窗帘...</string>
-    <string name="read">读取</string>
+    <string name="read">重新读取</string>
     <string name="current_power_value">当前电度值：%s</string>
-    <string name="dimmer_progress">亮度等级</string>
+    <string name="dimmer_progress">当前亮度等级</string>
+    <string name="dimmer_increase">亮度+</string>
+    <string name="dimmer_decrease">亮度-</string>
 
 </resources>

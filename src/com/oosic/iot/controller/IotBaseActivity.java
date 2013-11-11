@@ -34,6 +34,7 @@ public class IotBaseActivity extends Activity {
    public static final int CMD_RELAY_ALL_OFF = 6;
    public static final int CMD_IR_STUDY = 7;
    public static final int CMD_IR_SEND = 8;
+   public static final int CMD_USR_BASE = 100;
 
    @Override
    public void onCreate(Bundle savedInstanceState) {

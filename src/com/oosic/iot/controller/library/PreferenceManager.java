@@ -16,6 +16,7 @@ public class PreferenceManager {
       public static final String FIRST_RUN = "first_run";
       public static final String COMMAND_BUTTON = "cmd_btn_";
       public static final String CONTROLLER_BUTTON = "controller_btn_";
+      public static final String DIMMER_VALUE = "dimmer";
    }
 
    public PreferenceManager(Context context) {
@@ -92,6 +93,23 @@ public class PreferenceManager {
    }
    
    public boolean setButtonAddr(String name, int addr) {
+      SharedPreferences prefs = getAppSettingsPrefs();
+      if (prefs != null) {
+         return prefs.edit().putInt(name, addr).commit();
+      }
+      
+      return false;
+   }
+
+   public int getDimmerValue(String name) {
+      SharedPreferences prefs = getAppSettingsPrefs();
+      if (prefs != null) {
+         return prefs.getInt(name, 0);
+      }
+      return 0;
+   }
+   
+   public boolean setDimmerValue(String name, int addr) {
       SharedPreferences prefs = getAppSettingsPrefs();
       if (prefs != null) {
          return prefs.edit().putInt(name, addr).commit();
