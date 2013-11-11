@@ -1,5 +1,6 @@
 package com.oosic.iot.controller;
 
+import java.io.Reader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
@@ -14,20 +15,27 @@ import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 public class PowerStatusActivity extends IotBaseActivity {
 
    private static final String TAG = "PowerStatusActivity";
 
+   private static final int CMD_GET_POWER = 1;
+   private static final int DURATION_GET_POWER = 10000; // ms
+
+   private TextView mPowerView;
+   private Button mReadPowerBtn;
    private Handler mHandler = new Handler();
    private IotManager mIotManager;
    private DeviceItem mDevice;
+   private ReadPowerRunnable mReadPowerRunnable = new ReadPowerRunnable();
 
    @Override
    public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
 
-      setContentView(R.layout.activity_tv_control);
+      setContentView(R.layout.activity_power);
 
       init();
       mHandler.post(new Runnable() {
@@ -40,18 +48,48 @@ public class PowerStatusActivity extends IotBaseActivity {
    private void init() {
       mIotManager = getIotManager();
       initViews();
+
+      readPower();
+      requestReadPower(DURATION_GET_POWER);
    }
 
    private void initViews() {
       DeviceItem device = new DeviceItem();
-      device.config = new DeviceConfig(DEV_BW800IR, 200, "192.168.1.200", 5000,
+      device.config = new DeviceConfig(DEV_BW800PW, 220, "192.168.1.220", 5000,
             COMP_ALL, 1);
       device.listener = new PowerDataListener(device);
       mDevice = device;
 
+      mPowerView = (TextView) findViewById(R.id.power_value);
+      mPowerView.setText(getString(R.string.current_power_value, ""));
+      mReadPowerBtn = (Button) findViewById(R.id.read_power_btn);
+      mReadPowerBtn.setOnClickListener(new OnClickListener() {
+         public void onClick(View v) {
+            requestReadPower(1000);
+         }
+      });
    }
 
    private void relayoutViews() {
+
+   }
+
+   private void readPower() {
+      sendCommand(mDevice, getCommand(CMD_GET_POWER));
+   }
+
+   private void requestReadPower(long delayMillis) {
+      mHandler.removeCallbacks(mReadPowerRunnable);
+      mHandler.postDelayed(mReadPowerRunnable, delayMillis);
+   }
+
+   class ReadPowerRunnable implements Runnable {
+
+      @Override
+      public void run() {
+         readPower();
+         requestReadPower(DURATION_GET_POWER);
+      }
 
    }
 
@@ -71,10 +109,20 @@ public class PowerStatusActivity extends IotBaseActivity {
             .setPositiveButton(R.string.ok, null).show();
    }
 
-   private void showProgressDialog() {
-   }
-
-   private void hideProgressDialog() {
+   private byte[] getCommand(int command) {
+      byte[] data = new byte[7];
+      data[0] = (byte) (mDevice.config.addr & 0xff);
+      data[1] = (byte) 0x50;
+      data[2] = (byte) 0xee;
+      switch (command) {
+      case CMD_GET_POWER:
+         data[3] = (byte) 0x02;
+         data[4] = (byte) 0x00;
+         data[5] = (byte) 0x00;
+         break;
+      }
+      data[6] = (byte) (data[3] ^ data[4] ^ data[5]);
+      return data;
    }
 
    private void sendCommand(DeviceItem device, byte[] data) {
@@ -90,13 +138,29 @@ public class PowerStatusActivity extends IotBaseActivity {
       mDevice.socket = null;
    }
 
-   private void analyzeResult(PowerDataListener listener,
-         DatagramPacket packet) {
+   private void analyzeResult(PowerDataListener listener, DatagramPacket packet) {
       byte[] data = packet.getData();
       String resultStr = IotManager.toHexString(data, 0, packet.getLength());
+      String str = resultStr.substring(0, 6);
       Utils.log(TAG, "analyzeResult: " + resultStr);
       DeviceItem device = listener.device;
-      switch (device.config.type) {
+      if (packet.getLength() == 8 && "50eb02".equals(str)) {
+         long value = ((data[6] << 24) & 0xff000000)
+               | ((data[5] << 16) & 0xff0000) | ((data[4] << 8) & 0xff00)
+               | data[3] & 0xff;
+         double powerValue = (double) value / (double) 3200;
+         String powerStr = Double.toString(powerValue);
+         int length = powerStr.length();
+         String result = powerStr;
+         int dotIndex = powerStr.indexOf('.');
+         if (dotIndex > 0) {
+            dotIndex += 4;
+            if (dotIndex > length) {
+               dotIndex = length;
+            }
+            result = powerStr.substring(0, dotIndex);
+         }
+         mPowerView.setText(getString(R.string.current_power_value, result));
       }
    }
 

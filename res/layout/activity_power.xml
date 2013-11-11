@@ -17,29 +17,51 @@
         android:focusable="false" />
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/power_logo"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="@dimen/logo_margin_h"
         android:layout_marginRight="@dimen/logo_margin_h"
+        android:layout_marginTop="@dimen/light_body_margin_t"
         android:orientation="vertical" >
 
         <TextView
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:text="@string/app_name_power"
             android:textColor="@android:color/white"
             android:textSize="24dp" />
 
-        <TextView
-            android:id="@+id/power_value"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:text="@string/current_power_value"
-            android:textColor="@android:color/white"
-            android:textSize="20dp" />
+            android:layout_marginTop="@dimen/light_body_margin_t"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/power_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text=""
+                android:textColor="@android:color/white"
+                android:textSize="20dp" />
+
+            <Button
+                android:id="@+id/read_power_btn"
+                android:layout_width="@dimen/fan_ico_width"
+                android:layout_height="@dimen/fan_ico_height"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/fan_bg"
+                android:focusable="true"
+                android:gravity="center"
+                android:text="@string/read"
+                android:textColor="@android:color/white"
+                android:textSize="20dp" />
+        </LinearLayout>
     </LinearLayout>
 
 </RelativeLayout>
