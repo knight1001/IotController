@@ -88,9 +88,13 @@ public class CurtainControlActivity extends IotBaseActivity {
          public void onClick(View v) {
             CurtainItem item = (CurtainItem) v.getTag();
             try {
-               int duration = Integer.parseInt(mOpenDurationView.getText()
+               long duration = Long.parseLong(mOpenDurationView.getText()
                      .toString());
-               sendCommand(item, getCommand(item.command, duration));
+               if (duration > 65535) {
+	               showToast(getString(R.string.duration_too_large));
+	               return;
+               }
+               sendCommand(item, getCommand(item.command, (int) duration));
             } catch (NumberFormatException e) {
                showToast(getString(R.string.illegal_character));
             }
@@ -104,9 +108,13 @@ public class CurtainControlActivity extends IotBaseActivity {
          public void onClick(View v) {
             CurtainItem item = (CurtainItem) v.getTag();
             try {
-               int duration = Integer.parseInt(mCloseDurationView.getText()
+               long duration = Long.parseLong(mCloseDurationView.getText()
                      .toString());
-               sendCommand(item, getCommand(item.command, duration));
+               if (duration > 65535) {
+	               showToast(getString(R.string.duration_too_large));
+	               return;
+               }
+               sendCommand(item, getCommand(item.command, (int) duration));
             } catch (NumberFormatException e) {
                showToast(getString(R.string.illegal_character));
             }
@@ -146,6 +154,8 @@ public class CurtainControlActivity extends IotBaseActivity {
          }
       });
       
+      mOpenDurationView.clearFocus();
+      mCloseDurationView.clearFocus();
       mOpenBtn.requestFocus();
    }
 
